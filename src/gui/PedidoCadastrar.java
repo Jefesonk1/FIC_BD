@@ -4,17 +4,21 @@ import dao.ClienteDao;
 import dao.ProdutoDao;
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import models.Cliente;
 import models.Produto;
+import utils.TableDataMover;
 
 /**
  *
  * @author Jefeson
  */
 public class PedidoCadastrar extends javax.swing.JFrame {
+
     private int codigoVendedor;
 
     public int getCodigoVendedor() {
@@ -23,8 +27,9 @@ public class PedidoCadastrar extends javax.swing.JFrame {
 
     public void setCodigoVendedor(int codigoVendedor) {
         this.codigoVendedor = codigoVendedor;
-        lblCodigoVendedor.setText("Codigo do vendedor: " +codigoVendedor);
+        lblCodigoVendedor.setText("Codigo do vendedor: " + codigoVendedor);
     }
+
     /**
      * Creates new form PedidoCadastrar
      */
@@ -64,18 +69,16 @@ public class PedidoCadastrar extends javax.swing.JFrame {
         jTextField5 = new javax.swing.JTextField();
         jTextField6 = new javax.swing.JTextField();
         jButton4 = new javax.swing.JButton();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Codigo", "Nome"
             }
         ));
         jScrollPane1.setViewportView(jTable1);
@@ -95,13 +98,10 @@ public class PedidoCadastrar extends javax.swing.JFrame {
 
         jTable2.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "codigo", "nome", "preco", "cor", "categoria", "tamanho", "peso"
             }
         ));
         jScrollPane2.setViewportView(jTable2);
@@ -119,6 +119,7 @@ public class PedidoCadastrar extends javax.swing.JFrame {
         ));
         jScrollPane3.setViewportView(jTable3);
 
+        txtBuscarProdutos.setText("chain");
         txtBuscarProdutos.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 txtBuscarProdutosActionPerformed(evt);
@@ -190,6 +191,13 @@ public class PedidoCadastrar extends javax.swing.JFrame {
 
         jButton4.setText("Buscar");
 
+        jButton1.setText("jButton1");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -213,19 +221,25 @@ public class PedidoCadastrar extends javax.swing.JFrame {
                         .addComponent(jTextField6, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jButton4)))
-                .addGap(115, 115, 115)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(txtBuscarProdutos, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton3))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGroup(layout.createSequentialGroup()
-                            .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                            .addComponent(btnBuscar))
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(115, 115, 115)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(txtBuscarProdutos, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jButton3))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(layout.createSequentialGroup()
+                                    .addComponent(txtBuscar, javax.swing.GroupLayout.PREFERRED_SIZE, 381, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                    .addComponent(btnBuscar))
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(18, 18, 18)
+                        .addComponent(jButton1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(45, 45, 45))
         );
         layout.setVerticalGroup(
@@ -254,11 +268,17 @@ public class PedidoCadastrar extends javax.swing.JFrame {
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jButton3)
                         .addComponent(txtBuscarProdutos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(7, 7, 7)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap())
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(7, 7, 7)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addContainerGap())
+                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jButton1)
+                        .addGap(137, 137, 137))))
         );
 
         pack();
@@ -286,16 +306,17 @@ public class PedidoCadastrar extends javax.swing.JFrame {
             //System.out.println(txtBuscar.getText());
             DefaultTableModel modeloTable = (DefaultTableModel) jTable1.getModel();
             modeloTable.setNumRows(0);
-
+            String nome;
             for (Cliente p : clientes) {
+                if (p.getNomeDoMeio() == null) {
+                    nome = p.getPrimeiroNome() + ' ' + p.getSobrenome();
+                } else {
+                    nome = p.getPrimeiroNome() + ' ' + p.getNomeDoMeio() + ' ' + p.getSobrenome();
+                }
+
                 modeloTable.addRow(new Object[]{
                     p.getId(),
-                    p.getPrimeiroNome(),
-                    p.getNomeDoMeio(),
-                    p.getSobrenome(),
-                    p.getSufixo(),
-                    p.getTratamento(),
-                    p.getSenha()
+                    nome
                 });
             }
         } catch (SQLException ex) {
@@ -308,7 +329,7 @@ public class PedidoCadastrar extends javax.swing.JFrame {
         // TODO add your handling code here:
         List<Produto> produtos = null;
         try {
-            produtos = ProdutoDao.read(txtBuscarProdutos.getText());
+            produtos = ProdutoDao.buscar(txtBuscarProdutos.getText());
             //System.out.println(txtBuscar.getText());
             DefaultTableModel modeloTable = (DefaultTableModel) jTable2.getModel();
             modeloTable.setNumRows(0);
@@ -316,13 +337,35 @@ public class PedidoCadastrar extends javax.swing.JFrame {
             for (Produto p : produtos) {
                 modeloTable.addRow(new Object[]{
                     p.getCodigo(),
-                    p.getNome()
+                    p.getNome(),
+                    p.getPreco(),
+                    p.getCor(),
+                    p.getCategoria(),
+                    p.getTamanho(),
+                    p.getPeso()
                 });
             }
         } catch (SQLException ex) {
             Logger.getLogger(ClienteGui.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_jButton3ActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+//        TableDataMover mover = new TableDataMover(jTable2, jTable3);;;
+//        mover.copy_row_unique();//the selected row will be copied from jTable1 to jTable2
+        String quantidade = JOptionPane.showInputDialog("Enter a path");
+        int selectedRowIndex = jTable2.getSelectedRow();
+        int selectedColIndex = jTable2.getSelectedColumn();
+        DefaultTableModel curriculumSubjectsModel = (DefaultTableModel) jTable3.getModel();
+        Vector v = new Vector();
+        v.add(quantidade);
+        for (int i=0;i<6;i++){
+            v.add(jTable2.getValueAt(selectedRowIndex,i));
+        }
+        curriculumSubjectsModel.addRow(v);
+        jTable3.setModel(curriculumSubjectsModel);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
      * @param args the command line arguments
@@ -361,6 +404,7 @@ public class PedidoCadastrar extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JLabel jLabel1;

@@ -18,6 +18,15 @@ public class Produto {
     private int codigoCategoria;
     private Timestamp dtInicioVenda;
     private Timestamp dtFimVenda;
+    private String Categoria;
+
+    public String getCategoria() {
+        return Categoria;
+    }
+
+    public void setCategoria(String Categoria) {
+        this.Categoria = Categoria;
+    }
 
     public String getCodigo() {
         return codigo;
