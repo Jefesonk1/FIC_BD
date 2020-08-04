@@ -79,6 +79,11 @@ public class PedidoOptions extends javax.swing.JFrame {
         });
 
         btnConsultar.setText("Consultar Pedido");
+        btnConsultar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnConsultarActionPerformed(evt);
+            }
+        });
 
         btnAlterar.setText("Alterar Pedido");
 
@@ -121,6 +126,12 @@ public class PedidoOptions extends javax.swing.JFrame {
         pc.setCodigoVendedor(codigoVendedor);
         pc.setVisible(true);
     }//GEN-LAST:event_btnCadastrarActionPerformed
+
+    private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
+        // TODO add your handling code here:
+        PedidoConsultar pc = new PedidoConsultar();
+        pc.setVisible(true);
+    }//GEN-LAST:event_btnConsultarActionPerformed
 
     /**
      * @param args the command line arguments
