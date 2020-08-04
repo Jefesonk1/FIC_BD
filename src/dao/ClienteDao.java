@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import models.Cliente;
+import models.Endereco;
 
 public class ClienteDao {
 
@@ -49,34 +50,36 @@ public class ClienteDao {
         return clientes;
     }
 
-    public static Cliente read(int key) throws SQLException {
+    public static List<Endereco> readEndereco(int key) throws SQLException {
         Connection con;
         con = DatabaseConnection.getConnection();
         PreparedStatement stmt = null;
         ResultSet rs = null;
 
-        Cliente cliente = new Cliente();
+        List<Endereco> endereco = new ArrayList<>();
 
         try {
-            stmt = con.prepareStatement("SELECT * FROM cliente WHERE codigo = ?");
+            stmt = con.prepareStatement("SELECT E.* FROM cliente c JOIN CLIENTEENDERECO ec ON c.codigo = ec.CODIGOCLIENTE JOIN ENDERECO E ON E.ID = EC.IDENDERECO WHERE codigo = ?");
             stmt.setInt(1, key);
             rs = stmt.executeQuery();
 
             while (rs.next()) {
-                cliente.setId(rs.getInt("codigo"));
-                cliente.setPrimeiroNome(rs.getString("primeironome"));
-                cliente.setNomeDoMeio(rs.getString("nomedomeio"));
-                cliente.setSobrenome(rs.getString("sobrenome"));
-                cliente.setTratamento(rs.getString("tratamento"));
-                cliente.setSufixo(rs.getString("sufixo"));
-                cliente.setSenha(rs.getString("senha"));
+                Endereco e = new Endereco();
+                e.setId(rs.getInt("id"));
+                e.setLogradouro(rs.getString("logradouro"));
+                e.setComplemento(rs.getString("complemento"));
+                e.setCidade(rs.getString("cidade"));
+                e.setEstado(rs.getString("estado"));
+                e.setPais(rs.getString("pais"));
+                e.setCodigopostal(rs.getString("codigopostal"));
+                endereco.add(e);
             }
         } catch (SQLException ex) {
             Logger.getLogger(ClienteDao.class.getName()).log(Level.SEVERE, null, ex);
         } finally {
             DatabaseConnection.closeConnection(con, stmt, rs);
         }
-        return cliente;
+        return endereco;
     }
 
     public static void create(Cliente p) throws SQLException {

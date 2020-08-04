@@ -1,5 +1,7 @@
 package models;
 
+import java.util.List;
+
 /**
  *
  * @author Jefeson
@@ -13,6 +15,15 @@ public class Cliente {
     private String sobrenome;
     private String sufixo;
     private String senha;
+    private List<Endereco> endereco;
+
+    public List<Endereco> getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(List<Endereco> endereco) {
+        this.endereco = endereco;
+    }
 
     public int getId() {
         return id;
