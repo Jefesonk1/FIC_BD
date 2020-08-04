@@ -19,38 +19,35 @@ public class VendedorDao {
         ResultSet rs = null;
 
         List<Vendedor> vendedores = new ArrayList<>();
-        try {
-            stmt = con.prepareStatement("SELECT * FROM vendedores WHERE primeironome = ?");
-            // String query = ("SELECT * FROM cliente WHERE primeironome = '?'");
+        stmt = con.prepareStatement("SELECT * FROM vendedores WHERE primeironome = ?");
+        // String query = ("SELECT * FROM cliente WHERE primeironome = '?'");
 
-            System.out.println(key);
-            stmt.setString(1, key);
-            rs = stmt.executeQuery();
+        System.out.println(key);
+        stmt.setString(1, key);
+        rs = stmt.executeQuery();
 //            stmt = con.prepareStatement(query);
 //            rs = stmt.executeQuery(query);
-            while (rs.next()) {
-                Vendedor a = new Vendedor();
+        while (rs.next()) {
+            Vendedor a = new Vendedor();
 
-                a.setCodigo(rs.getInt("codigo"));
-                a.setPrimeiroNome(rs.getString("primeironome"));
-                a.setNomeDoMeio(rs.getString("nomedomeio"));
-                a.setSobrenome(rs.getString("sobrenome"));
-                a.setSenha(rs.getString("senha"));
-                a.setSexo(rs.getString("sexo"));
-                a.setQuota(rs.getFloat("quota"));
-                a.setDtContratacao(rs.getTimestamp("dtcontratacao"));
-                a.setDtNascimento(rs.getTimestamp("dtcontratacao"));
-                a.setComissao(rs.getFloat("comissao"));
-                a.setBonus(rs.getFloat("bonus"));
-                
-                vendedores.add(a);
-                System.out.println(a.getPrimeiroNome());
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(ClienteDao.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            DatabaseConnection.closeConnection(con, stmt, rs);
+            a.setCodigo(rs.getInt("codigo"));
+            a.setPrimeiroNome(rs.getString("primeironome"));
+            a.setNomeDoMeio(rs.getString("nomedomeio"));
+            a.setSobrenome(rs.getString("sobrenome"));
+            a.setSenha(rs.getString("senha"));
+            a.setSexo(rs.getString("sexo"));
+            a.setQuota(rs.getFloat("quota"));
+            a.setDtContratacao(rs.getTimestamp("dtcontratacao"));
+            a.setDtNascimento(rs.getTimestamp("dtcontratacao"));
+            a.setComissao(rs.getFloat("comissao"));
+            a.setBonus(rs.getFloat("bonus"));
+
+            vendedores.add(a);
+            System.out.println(a.getPrimeiroNome());
         }
+
+        DatabaseConnection.closeConnection(con, stmt, rs);
+
         return vendedores;
     }
 
@@ -83,38 +80,30 @@ public class VendedorDao {
 //        }
 //        return cliente;
 //    }
-    
-    
-    
-        public static boolean logar(int codigo, String senha) throws SQLException {
+    public static boolean logar(int codigo, String senha) throws SQLException {
         Connection con;
         con = DatabaseConnection.getConnection();
         PreparedStatement stmt = null;
         ResultSet rs = null;
 
-         Vendedor a = new Vendedor();
-        try {
-            stmt = con.prepareStatement("SELECT codigo,senha FROM vendedor WHERE codigo = ? and senha = ?");
-            // String query = ("SELECT * FROM cliente WHERE primeironome = '?'");
-            stmt.setInt(1, codigo);
-            stmt.setString(2,senha);
-            rs = stmt.executeQuery();
-            while (rs.next()) {
-                a.setCodigo(rs.getInt("codigo"));
-                a.setSenha(rs.getString("senha"));              
-            }
-            if(a.getCodigo()==codigo && a.getSenha().equals(senha)){
-                return true;
-            }
-            
-        } catch (SQLException ex) {
-            Logger.getLogger(ClienteDao.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            DatabaseConnection.closeConnection(con, stmt, rs);
+        Vendedor a = new Vendedor();
+        stmt = con.prepareStatement("SELECT codigo,senha FROM vendedor WHERE codigo = ? and senha = ?");
+        // String query = ("SELECT * FROM cliente WHERE primeironome = '?'");
+        stmt.setInt(1, codigo);
+        stmt.setString(2, senha);
+        rs = stmt.executeQuery();
+        while (rs.next()) {
+            a.setCodigo(rs.getInt("codigo"));
+            a.setSenha(rs.getString("senha"));
         }
+        if (a.getCodigo() == codigo && a.getSenha().equals(senha)) {
+            return true;
+        }
+
+        DatabaseConnection.closeConnection(con, stmt, rs);
+
         return false;
     }
-
 
 //    public static void create(Cliente p) throws SQLException {
 //        Connection con;
@@ -160,7 +149,6 @@ public class VendedorDao {
 //            DatabaseConnection.closeConnection(con, stmt);
 //        }
 //    };
-
 //    public void update(Cliente p) {
 //        Connection con;
 //        con = DatabaseConnection.getConnection();

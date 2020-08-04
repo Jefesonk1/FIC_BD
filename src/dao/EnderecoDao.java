@@ -4,12 +4,13 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import models.Cliente;
 import models.Endereco;
 
-public class ClienteDao {
+public class EnderecoDao {
 
     public static List<Cliente> read(String key) throws SQLException {
         Connection con;
@@ -41,60 +42,35 @@ public class ClienteDao {
         return clientes;
     }
 
-    public static List<Endereco> readEndereco(int key) throws SQLException {
+    public static long create(Endereco e) throws SQLException {
         Connection con;
         con = DatabaseConnection.getConnection();
         PreparedStatement stmt = null;
         ResultSet rs = null;
-
-        List<Endereco> endereco = new ArrayList<>();
-
-        stmt = con.prepareStatement("SELECT E.* FROM cliente c JOIN CLIENTEENDERECO ec ON c.codigo = ec.CODIGOCLIENTE JOIN ENDERECO E ON E.ID = EC.IDENDERECO WHERE codigo = ?");
-        stmt.setInt(1, key);
-        rs = stmt.executeQuery();
-
-        while (rs.next()) {
-            Endereco e = new Endereco();
-            e.setId(rs.getInt("id"));
-            e.setLogradouro(rs.getString("logradouro"));
-            e.setComplemento(rs.getString("complemento"));
-            e.setCidade(rs.getString("cidade"));
-            e.setEstado(rs.getString("estado"));
-            e.setPais(rs.getString("pais"));
-            e.setCodigopostal(rs.getString("codigopostal"));
-            endereco.add(e);
-        }
-
-        DatabaseConnection.closeConnection(con, stmt, rs);
-        return endereco;
-    }
-
-    public static long create(Cliente p) throws SQLException {
-        Connection con;
-        con = DatabaseConnection.getConnection();
-        PreparedStatement stmt = null;
-        ResultSet rs = null;
-         String generatedColumns[] = { "CODIGO" };
-        stmt = con.prepareStatement("INSERT INTO cliente (codigo, primeironome, nomedomeio, sobrenome, tratamento, sufixo, senha) VALUES ((SELECT max(codigo)+1 FROM cliente) ,?,?,?,?,?,?)",generatedColumns);
-        stmt.setString(1, p.getPrimeiroNome());
-        stmt.setString(2, p.getNomeDoMeio());
-        stmt.setString(3, p.getSobrenome());
-        stmt.setString(4, p.getTratamento());
-        stmt.setString(5, p.getSufixo());
-        stmt.setString(6, p.getSenha());
-        stmt.executeUpdate();
+        String generatedColumns[] = { "ID" };
+        stmt = con.prepareStatement("INSERT INTO endereco (id, logradouro, complemento, cidade, estado, pais, codigopostal) VALUES ((SELECT max(id)+1 FROM endereco) ,?,?,?,?,?,?)", generatedColumns);
+        stmt.setString(1, e.getLogradouro());
+        stmt.setString(2, e.getComplemento());
+        stmt.setString(3, e.getCidade());
+        stmt.setString(4, e.getEstado());
+        stmt.setString(5, e.getPais());
+        stmt.setString(6, e.getCodigopostal());
+        stmt.executeQuery();
 
         try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
             if (generatedKeys.next()) {
-                  long codigo = generatedKeys.getLong(1);
-                    System.out.println(codigo);
+                  long id = generatedKeys.getLong(1);
+                    System.out.println(id);
                     stmt.close();
-                     return codigo;
+                     return id;
             } else {
                 stmt.close();
                 throw new SQLException("Creating user failed, no ID obtained.");
             }
         }
+
+        
+       
 
 //            stmt = con.prepareStatement("SELECT MAX(codigo) FROM cliente;");
 //            rs = stmt.executeQuery();

@@ -19,29 +19,26 @@ public class TransportadoraDao {
         ResultSet rs = null;
 
         List<Transportadora> transportadoras = new ArrayList<>();
-        try {
-            stmt = con.prepareStatement("SELECT * FROM transportadora");
-            // String query = ("SELECT * FROM cliente WHERE primeironome = '?'");
+        stmt = con.prepareStatement("SELECT * FROM transportadora");
+        // String query = ("SELECT * FROM cliente WHERE primeironome = '?'");
 
-            System.out.println(key);
-           // stmt.setString(1, key);
-            rs = stmt.executeQuery();
+        System.out.println(key);
+        // stmt.setString(1, key);
+        rs = stmt.executeQuery();
 //            stmt = con.prepareStatement(query);
 //            rs = stmt.executeQuery(query);
-            while (rs.next()) {
-                Transportadora t = new Transportadora();
+        while (rs.next()) {
+            Transportadora t = new Transportadora();
 
-                t.setCodigo(rs.getInt("codigo"));
-                t.setNome(rs.getString("nome"));
-                t.setTaxaBase(rs.getFloat("taxabase"));
-                t.setTaxaEnvio(rs.getFloat("taxaenvio"));
-                transportadoras.add(t);
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(ClienteDao.class.getName()).log(Level.SEVERE, null, ex);
-        } finally {
-            DatabaseConnection.closeConnection(con, stmt, rs);
+            t.setCodigo(rs.getInt("codigo"));
+            t.setNome(rs.getString("nome"));
+            t.setTaxaBase(rs.getFloat("taxabase"));
+            t.setTaxaEnvio(rs.getFloat("taxaenvio"));
+            transportadoras.add(t);
         }
+
+        DatabaseConnection.closeConnection(con, stmt, rs);
+
         return transportadoras;
     }
 }

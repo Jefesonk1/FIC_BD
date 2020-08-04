@@ -1,9 +1,15 @@
 package gui;
 
 import dao.ClienteDao;
+import dao.DetalhesPedidoDao;
+import dao.PedidoDao;
 import dao.ProdutoDao;
 import dao.TransportadoraDao;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
+import java.sql.Timestamp;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 import java.util.logging.Level;
@@ -11,10 +17,11 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import models.Cliente;
+import models.DetalhesPedido;
 import models.Endereco;
+import models.Pedido;
 import models.Produto;
 import models.Transportadora;
-import utils.TableDataMover;
 
 /**
  *
@@ -56,9 +63,9 @@ public class PedidoCadastrar extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField2 = new javax.swing.JTextField();
-        jTextField4 = new javax.swing.JTextField();
-        jTextField5 = new javax.swing.JTextField();
+        txtContaCliente = new javax.swing.JTextField();
+        txtNCartaoCredito = new javax.swing.JTextField();
+        txtCodigoConfirmacao = new javax.swing.JTextField();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
         txtBuscar = new javax.swing.JTextField();
@@ -86,6 +93,7 @@ public class PedidoCadastrar extends javax.swing.JFrame {
         txtSufixo = new javax.swing.JTextField();
         jLabel8 = new javax.swing.JLabel();
         jButton5 = new javax.swing.JButton();
+        jButton11 = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jScrollPane4 = new javax.swing.JScrollPane();
         jTable4 = new javax.swing.JTable();
@@ -98,13 +106,21 @@ public class PedidoCadastrar extends javax.swing.JFrame {
         jButton6 = new javax.swing.JButton();
         jButton7 = new javax.swing.JButton();
         jButton8 = new javax.swing.JButton();
-        jTextField1 = new javax.swing.JTextField();
         jButton9 = new javax.swing.JButton();
         jButton10 = new javax.swing.JButton();
+        btnRealizarPedido = new javax.swing.JButton();
+        jTextField3 = new javax.swing.JTextField();
+        jTextField7 = new javax.swing.JTextField();
+        jButton13 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jTabbedPane1.setPreferredSize(new java.awt.Dimension(1280, 720));
+        jTabbedPane1.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                jTabbedPane1MouseClicked(evt);
+            }
+        });
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
         jPanel1.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
@@ -115,9 +131,9 @@ public class PedidoCadastrar extends javax.swing.JFrame {
 
         jLabel3.setText("código de confirmação");
 
-        jTextField4.addActionListener(new java.awt.event.ActionListener() {
+        txtNCartaoCredito.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField4ActionPerformed(evt);
+                txtNCartaoCreditoActionPerformed(evt);
             }
         });
 
@@ -133,9 +149,9 @@ public class PedidoCadastrar extends javax.swing.JFrame {
                     .addComponent(jLabel3))
                 .addGap(21, 21, 21)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
-                    .addComponent(jTextField2)
-                    .addComponent(jTextField4))
+                    .addComponent(txtCodigoConfirmacao, javax.swing.GroupLayout.DEFAULT_SIZE, 120, Short.MAX_VALUE)
+                    .addComponent(txtContaCliente)
+                    .addComponent(txtNCartaoCredito))
                 .addGap(53, 53, 53))
         );
         jPanel1Layout.setVerticalGroup(
@@ -144,15 +160,15 @@ public class PedidoCadastrar extends javax.swing.JFrame {
                 .addGap(65, 65, 65)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel1)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtContaCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 50, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtNCartaoCredito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(51, 51, 51)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtCodigoConfirmacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(83, 83, 83))
         );
 
@@ -317,6 +333,13 @@ public class PedidoCadastrar extends javax.swing.JFrame {
             }
         });
 
+        jButton11.setText("Cadastrar Novo Cliente");
+        jButton11.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton11ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -368,7 +391,9 @@ public class PedidoCadastrar extends javax.swing.JFrame {
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(jButton5)
-                .addGap(337, 337, 337))
+                .addGap(131, 131, 131)
+                .addComponent(jButton11)
+                .addGap(127, 127, 127))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -390,7 +415,9 @@ public class PedidoCadastrar extends javax.swing.JFrame {
                         .addGap(8, 8, 8)
                         .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(jButton5)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jButton5)
+                    .addComponent(jButton11))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 23, Short.MAX_VALUE)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel2Layout.createSequentialGroup()
@@ -421,10 +448,7 @@ public class PedidoCadastrar extends javax.swing.JFrame {
 
         jTable4.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+
             },
             new String [] {
                 "Title 1", "Title 2", "Title 3", "Title 4", "Title 5", "Title 6", "Title 7"
@@ -434,10 +458,7 @@ public class PedidoCadastrar extends javax.swing.JFrame {
 
         jTable5.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+
             },
             new String [] {
                 "Title 1", "Title 2", "Title 3", "Title 4", "Title 5", "Title 6", "Title 7"
@@ -447,10 +468,7 @@ public class PedidoCadastrar extends javax.swing.JFrame {
 
         jTable6.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null}
+
             },
             new String [] {
                 "Title 1", "Title 2", "Title 3", "Title 4", "Title 5", "Title 6", "Title 7"
@@ -460,10 +478,7 @@ public class PedidoCadastrar extends javax.swing.JFrame {
 
         jTable7.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "Title 1", "Title 2", "Title 3", "Title 4"
@@ -480,16 +495,14 @@ public class PedidoCadastrar extends javax.swing.JFrame {
 
         jButton7.setText("Novo Endereco");
 
-        jButton8.setText("jButton8");
+        jButton8.setText("Listar");
         jButton8.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton8ActionPerformed(evt);
             }
         });
 
-        jTextField1.setText("jTextField1");
-
-        jButton9.setText("jButton9");
+        jButton9.setText(">");
         jButton9.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton9ActionPerformed(evt);
@@ -503,38 +516,62 @@ public class PedidoCadastrar extends javax.swing.JFrame {
             }
         });
 
+        btnRealizarPedido.setText("GO!");
+        btnRealizarPedido.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRealizarPedidoActionPerformed(evt);
+            }
+        });
+
+        jTextField3.setText("jTextField3");
+
+        jTextField7.setText("jTextField7");
+
+        jButton13.setText("Selecionar");
+        jButton13.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton13ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(24, 24, 24)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(27, 27, 27)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jButton8)
-                            .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                            .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                        .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(58, 58, 58)
+                        .addComponent(btnRealizarPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 129, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                            .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addGroup(jPanel3Layout.createSequentialGroup()
+                                    .addGap(27, 27, 27)
+                                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addGroup(jPanel3Layout.createSequentialGroup()
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jButton13, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGroup(jPanel3Layout.createSequentialGroup()
+                                    .addGap(18, 18, 18)
+                                    .addComponent(jButton8, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                            .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                .addComponent(jButton6, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton7, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(jButton9, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(106, 106, 106))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(242, 242, 242))))
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(49, 49, 49)
-                .addComponent(jButton10, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(242, 242, 242))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -554,19 +591,28 @@ public class PedidoCadastrar extends javax.swing.JFrame {
                         .addComponent(jButton9)))
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(175, 175, 175)
+                        .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(18, 18, 18)
+                                .addComponent(jButton10)
+                                .addGap(64, 64, 64)
+                                .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel3Layout.createSequentialGroup()
+                                .addGap(104, 104, 104)
+                                .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addContainerGap(32, Short.MAX_VALUE))
+                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(7, 7, 7)
+                        .addComponent(btnRealizarPedido, javax.swing.GroupLayout.PREFERRED_SIZE, 92, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(57, 57, 57)
                         .addComponent(jButton8)
-                        .addGap(40, 40, 40)
-                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
+                        .addGap(37, 37, 37)
+                        .addComponent(jButton13)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
-                        .addComponent(jButton10)
-                        .addGap(64, 64, 64)
-                        .addComponent(jScrollPane6, javax.swing.GroupLayout.PREFERRED_SIZE, 340, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addGap(104, 104, 104)
-                        .addComponent(jScrollPane7, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(32, Short.MAX_VALUE))
+                        .addComponent(jTextField7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(112, 112, 112))))
         );
 
         jTabbedPane1.addTab("Endereços", jPanel3);
@@ -592,13 +638,160 @@ public class PedidoCadastrar extends javax.swing.JFrame {
         setLocationRelativeTo(null);
     }// </editor-fold>//GEN-END:initComponents
 
+    private void jTabbedPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jTabbedPane1MouseClicked
+
+    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
+        // TODO add your handling code here:
+
+        int selectedRowIndex = jTable4.getSelectedRow();
+        // int selectedColIndex = jTable4.getSelectedColumn();
+        DefaultTableModel curriculumSubjectsModel = (DefaultTableModel) jTable6.getModel();
+        Vector v = new Vector();
+        for (int i = 0; i < jTable4.getColumnCount(); i++) {
+            v.add(jTable4.getValueAt(selectedRowIndex, i));
+        }
+        curriculumSubjectsModel.addRow(v);
+        jTable6.setModel(curriculumSubjectsModel);
+    }//GEN-LAST:event_jButton10ActionPerformed
+
+    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
+        // TODO add your handling code here:
+        int selectedRowIndex = jTable4.getSelectedRow();
+        // int selectedColIndex = jTable4.getSelectedColumn();
+        DefaultTableModel curriculumSubjectsModel = (DefaultTableModel) jTable5.getModel();
+        Vector v = new Vector();
+        for (int i = 0; i < jTable4.getColumnCount(); i++) {
+            v.add(jTable4.getValueAt(selectedRowIndex, i));
+        }
+        curriculumSubjectsModel.addRow(v);
+        jTable5.setModel(curriculumSubjectsModel);
+    }//GEN-LAST:event_jButton9ActionPerformed
+
+    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
+        // TODO add your handling code here:
+
+        try {
+            // TODO add your handling code here:
+            //ponhas os dados
+            List<Transportadora> transportadoras = null;
+            transportadoras = TransportadoraDao.read("apagar_dps");
+            DefaultTableModel modeloTable = (DefaultTableModel) jTable7.getModel();
+            modeloTable.setNumRows(0);
+
+            for (Transportadora t : transportadoras) {
+                modeloTable.addRow(new Object[]{
+                    t.getCodigo(),
+                    t.getNome(),
+                    t.getTaxaBase(),
+                    t.getTaxaEnvio()
+                });
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PedidoCadastrar.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton8ActionPerformed
+
+    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
+        try {
+            // TODO add your handling code here:
+            //ponhas os dados
+            List<Endereco> enderecos = null;
+            enderecos = ClienteDao.readEndereco(Integer.parseInt(txtCodigo.getText()));
+            DefaultTableModel modeloTable = (DefaultTableModel) jTable4.getModel();
+            modeloTable.setNumRows(0);
+
+            for (Endereco e : enderecos) {
+                modeloTable.addRow(new Object[]{
+                    e.getId(),
+                    e.getLogradouro(),
+                    e.getComplemento(),
+                    e.getCidade(),
+                    e.getEstado(),
+                    e.getPais(),
+                    e.getCodigopostal()
+                });
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(PedidoCadastrar.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton6ActionPerformed
+
+    private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed
+        // TODO add your handling code here:
+        ClienteCadastrar cc = new ClienteCadastrar();
+        cc.setVisible(true);
+    }//GEN-LAST:event_jButton11ActionPerformed
+
+    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        int selectedRowIndex = jTable1.getSelectedRow();
+        int selectedColIndex = jTable1.getSelectedColumn();
+        //tratar null point dps
+        try {
+            txtCodigo.setText(jTable1.getValueAt(selectedRowIndex, 0).toString());
+            txtNome.setText(jTable1.getValueAt(selectedRowIndex, 1).toString());
+            txtTratamento.setText(jTable1.getValueAt(selectedRowIndex, 2).toString());
+            txtSufixo.setText(jTable1.getValueAt(selectedRowIndex, 3).toString());
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }//GEN-LAST:event_jButton5ActionPerformed
+
+    private void txtSufixoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSufixoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtSufixoActionPerformed
+
+    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton2ActionPerformed
+
+    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+        // TODO add your handling code here:
+        List<Produto> produtos = null;
+        try {
+            produtos = ProdutoDao.buscar(txtBuscarProdutos.getText());
+            //System.out.println(txtBuscar.getText());
+            DefaultTableModel modeloTable = (DefaultTableModel) jTable2.getModel();
+            modeloTable.setNumRows(0);
+
+            for (Produto p : produtos) {
+                modeloTable.addRow(new Object[]{
+                    p.getCodigo(),
+                    p.getNome(),
+                    p.getPreco(),
+                    p.getCor(),
+                    p.getCategoria(),
+                    p.getTamanho(),
+                    p.getPeso()
+                });
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(ClienteGui.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_jButton3ActionPerformed
+
     private void txtBuscarProdutosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtBuscarProdutosActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtBuscarProdutosActionPerformed
 
-    private void jTextField4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField4ActionPerformed
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField4ActionPerformed
+        //        TableDataMover mover = new TableDataMover(jTable2, jTable3);;;
+        //        mover.copy_row_unique();//the selected row will be copied from jTable1 to jTable2
+        String quantidade = JOptionPane.showInputDialog("Digite a quantidade desejada");
+        int selectedRowIndex = jTable2.getSelectedRow();
+        int selectedColIndex = jTable2.getSelectedColumn();
+        DefaultTableModel curriculumSubjectsModel = (DefaultTableModel) jTable3.getModel();
+        Vector v = new Vector();
+        v.add(quantidade);
+        for (int i = 0; i < jTable2.getColumnCount(); i++) {
+            v.add(jTable2.getValueAt(selectedRowIndex, i));
+        }
+        curriculumSubjectsModel.addRow(v);
+        jTable3.setModel(curriculumSubjectsModel);
+    }//GEN-LAST:event_jButton1ActionPerformed
 
     private void jTextField6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField6ActionPerformed
         // TODO add your handling code here:
@@ -631,150 +824,59 @@ public class PedidoCadastrar extends javax.swing.JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(ClienteGui.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }//GEN-LAST:event_btnBuscarActionPerformed
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void txtNCartaoCreditoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNCartaoCreditoActionPerformed
         // TODO add your handling code here:
-        List<Produto> produtos = null;
-        try {
-            produtos = ProdutoDao.buscar(txtBuscarProdutos.getText());
-            //System.out.println(txtBuscar.getText());
-            DefaultTableModel modeloTable = (DefaultTableModel) jTable2.getModel();
-            modeloTable.setNumRows(0);
+    }//GEN-LAST:event_txtNCartaoCreditoActionPerformed
 
-            for (Produto p : produtos) {
-                modeloTable.addRow(new Object[]{
-                    p.getCodigo(),
-                    p.getNome(),
-                    p.getPreco(),
-                    p.getCor(),
-                    p.getCategoria(),
-                    p.getTamanho(),
-                    p.getPeso()
-                });
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(ClienteGui.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_jButton3ActionPerformed
-
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jButton13ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton13ActionPerformed
         // TODO add your handling code here:
-//        TableDataMover mover = new TableDataMover(jTable2, jTable3);;;
-//        mover.copy_row_unique();//the selected row will be copied from jTable1 to jTable2
-        String quantidade = JOptionPane.showInputDialog("Digite a quantidade desejada");
-        int selectedRowIndex = jTable2.getSelectedRow();
-        int selectedColIndex = jTable2.getSelectedColumn();
-        DefaultTableModel curriculumSubjectsModel = (DefaultTableModel) jTable3.getModel();
-        Vector v = new Vector();
-        v.add(quantidade);
-        for (int i = 0; i < jTable2.getColumnCount(); i++) {
-            v.add(jTable2.getValueAt(selectedRowIndex, i));
-        }
-        curriculumSubjectsModel.addRow(v);
-        jTable3.setModel(curriculumSubjectsModel);
-    }//GEN-LAST:event_jButton1ActionPerformed
-
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
-
-    private void txtSufixoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSufixoActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_txtSufixoActionPerformed
-
-    private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        // TODO add your handling code here:
-        int selectedRowIndex = jTable1.getSelectedRow();
-        int selectedColIndex = jTable1.getSelectedColumn();
+        int selectedRowIndex = jTable7.getSelectedRow();
+        int selectedColIndex = jTable7.getSelectedColumn();
         //tratar null point dps
         try {
-            txtCodigo.setText(jTable1.getValueAt(selectedRowIndex, 0).toString());
-            txtNome.setText(jTable1.getValueAt(selectedRowIndex, 1).toString());
-            txtTratamento.setText(jTable1.getValueAt(selectedRowIndex, 2).toString());
-            txtSufixo.setText(jTable1.getValueAt(selectedRowIndex, 3).toString());
+            jTextField3.setText(jTable7.getValueAt(selectedRowIndex, 0).toString());
+            jTextField7.setText(jTable7.getValueAt(selectedRowIndex, 1).toString());
         } catch (Exception e) {
             System.out.println(e);
         }
+    }//GEN-LAST:event_jButton13ActionPerformed
 
-    }//GEN-LAST:event_jButton5ActionPerformed
+    private void btnRealizarPedidoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRealizarPedidoActionPerformed
+        // TODO add your handling code here:
+        Pedido p = new Pedido();
+        p.setDtpedido(new Timestamp(System.currentTimeMillis()));
+//        p.setDtenvio(dtenvio);
+//        p.setDtrecebimento(dtrecebimento);
+        p.setCodigoCliente(Integer.parseInt(txtCodigo.getText()));
+        p.setContaCliente(txtContaCliente.getText());
+        p.setNumeroCartaoCredito(Integer.parseInt(txtNCartaoCredito.getText()));
+        p.setCodigoConfirmacao(txtCodigoConfirmacao.getText());
+        p.setCodigoTransportadora(Integer.parseInt(jTextField3.getText()));
+        p.setCodigoVendedor(codigoVendedor);
+        p.setImposto(12f);
+        p.setEnderecoFatura(Integer.parseInt(jTable5.getValueAt(0, 0).toString()));
+        p.setEnderecoEntrega(Integer.parseInt(jTable6.getValueAt(0, 0).toString()));
+        System.out.println(p.getEnderecoEntrega() + " " + p.getCodigoCliente() + " " + p.getDtpedido());
 
-    private void jButton6ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton6ActionPerformed
         try {
-            // TODO add your handling code here:
-            //ponhas os dados
-            List<Endereco> enderecos = null;
-            enderecos = ClienteDao.readEndereco(Integer.parseInt(txtCodigo.getText()));
-            DefaultTableModel modeloTable = (DefaultTableModel) jTable4.getModel();
-            modeloTable.setNumRows(0);
-
-            for (Endereco e : enderecos) {
-                modeloTable.addRow(new Object[]{
-                    e.getId(),
-                    e.getLogradouro(),
-                    e.getComplemento(),
-                    e.getCidade(),
-                    e.getEstado(),
-                    e.getPais(),
-                    e.getCodigopostal()
-                });
+            long codigoPedidooo = PedidoDao.create(p);
+            List<DetalhesPedido> dp = new ArrayList<>();
+            for (int i = 0; i < jTable3.getRowCount(); i++) {
+                DetalhesPedido d = new DetalhesPedido();
+                d.setCodigoPedido(Math.toIntExact(codigoPedidooo));
+                d.setCodigoProduto(jTable3.getValueAt(i, 1).toString());
+                d.setQuantidade(Integer.parseInt( jTable3.getValueAt(i, 0).toString()));
+                d.setPrecoUnitario(Float.parseFloat(jTable3.getValueAt(i, 3).toString()));
+                d.setDesconto(0f);
+                dp.add(d);
+                DetalhesPedidoDao.create(d);
             }
         } catch (SQLException ex) {
             Logger.getLogger(PedidoCadastrar.class.getName()).log(Level.SEVERE, null, ex);
         }
-    }//GEN-LAST:event_jButton6ActionPerformed
-
-    private void jButton8ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton8ActionPerformed
-        // TODO add your handling code here:
-
-        try {
-            // TODO add your handling code here:
-            //ponhas os dados
-            List<Transportadora> transportadoras = null;
-            transportadoras = TransportadoraDao.read("apagar_dps");
-            DefaultTableModel modeloTable = (DefaultTableModel) jTable7.getModel();
-            modeloTable.setNumRows(0);
-
-            for (Transportadora t : transportadoras) {
-                modeloTable.addRow(new Object[]{
-                    t.getCodigo(),
-                    t.getNome(),
-                    t.getTaxaBase(),
-                    t.getTaxaEnvio()
-                });
-            }
-        } catch (SQLException ex) {
-            Logger.getLogger(PedidoCadastrar.class.getName()).log(Level.SEVERE, null, ex);
-        }
-    }//GEN-LAST:event_jButton8ActionPerformed
-
-    private void jButton9ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton9ActionPerformed
-        // TODO add your handling code here:
-        int selectedRowIndex = jTable4.getSelectedRow();
-        // int selectedColIndex = jTable4.getSelectedColumn();
-        DefaultTableModel curriculumSubjectsModel = (DefaultTableModel) jTable5.getModel();
-        Vector v = new Vector();
-        for (int i = 0; i < jTable4.getColumnCount(); i++) {
-            v.add(jTable4.getValueAt(selectedRowIndex, i));
-        }
-        curriculumSubjectsModel.addRow(v);
-        jTable5.setModel(curriculumSubjectsModel);
-    }//GEN-LAST:event_jButton9ActionPerformed
-
-    private void jButton10ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton10ActionPerformed
-        // TODO add your handling code here:
-
-        int selectedRowIndex = jTable4.getSelectedRow();
-        // int selectedColIndex = jTable4.getSelectedColumn();
-        DefaultTableModel curriculumSubjectsModel = (DefaultTableModel) jTable6.getModel();
-        Vector v = new Vector();
-        for (int i = 0; i < jTable4.getColumnCount(); i++) {
-            v.add(jTable4.getValueAt(selectedRowIndex, i));
-        }
-        curriculumSubjectsModel.addRow(v);
-        jTable6.setModel(curriculumSubjectsModel);
-    }//GEN-LAST:event_jButton10ActionPerformed
+    }//GEN-LAST:event_btnRealizarPedidoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -813,8 +915,11 @@ public class PedidoCadastrar extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
+    private javax.swing.JButton btnRealizarPedido;
     private javax.swing.JButton jButton1;
     private javax.swing.JButton jButton10;
+    private javax.swing.JButton jButton11;
+    private javax.swing.JButton jButton13;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
@@ -851,15 +956,16 @@ public class PedidoCadastrar extends javax.swing.JFrame {
     private javax.swing.JTable jTable5;
     private javax.swing.JTable jTable6;
     private javax.swing.JTable jTable7;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
-    private javax.swing.JTextField jTextField4;
-    private javax.swing.JTextField jTextField5;
+    private javax.swing.JTextField jTextField3;
     private javax.swing.JTextField jTextField6;
+    private javax.swing.JTextField jTextField7;
     private javax.swing.JLabel lblCodigoVendedor;
     private javax.swing.JTextField txtBuscar;
     private javax.swing.JTextField txtBuscarProdutos;
     private javax.swing.JTextField txtCodigo;
+    private javax.swing.JTextField txtCodigoConfirmacao;
+    private javax.swing.JTextField txtContaCliente;
+    private javax.swing.JTextField txtNCartaoCredito;
     private javax.swing.JTextField txtNome;
     private javax.swing.JTextField txtSufixo;
     private javax.swing.JTextField txtTratamento;
