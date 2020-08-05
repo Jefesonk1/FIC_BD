@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import models.Cliente;
 import models.DetalhesPedido;
 import models.Pedido;
@@ -31,5 +33,31 @@ public class DetalhesPedidoDao {
 
         stmt.close();
 
+    }
+    
+    
+       public static List<DetalhesPedido> readProduto(String key) throws SQLException {
+        Connection con;
+        con = DatabaseConnection.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        List<DetalhesPedido> detalhesPedido = new ArrayList<>();
+        
+        stmt = con.prepareStatement("select * from detalhespedido where codigoPedido = ?");
+        stmt.setInt(1, Integer.parseInt(key));
+        rs = stmt.executeQuery();
+        while(rs.next()){
+            DetalhesPedido dp = new DetalhesPedido();
+            dp.setCodigoPedido(rs.getInt("codigopedido"));
+            dp.setCodigoProduto(rs.getString("codigoproduto"));
+            dp.setDesconto(rs.getFloat("desconto"));
+            dp.setPrecoUnitario(rs.getFloat("precounitario"));
+            dp.setQuantidade(rs.getInt("quantidade"));
+            detalhesPedido.add(dp);
+        }
+
+        stmt.close();
+        
+        return detalhesPedido;
     }
 }    

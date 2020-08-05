@@ -4,7 +4,7 @@ package models;
  *
  * @author Jefeson
  */
-public class DetalhesPedido {
+public class DetalhesPedido{
    private  int codigoPedido;
    private String codigoProduto;
    private int quantidade;

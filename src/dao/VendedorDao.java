@@ -6,8 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import models.Vendedor;
 
 public class VendedorDao {
@@ -51,6 +49,43 @@ public class VendedorDao {
         return vendedores;
     }
 
+    
+        public static Vendedor readVendedor(String key) throws SQLException {
+        Connection con;
+        con = DatabaseConnection.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        Vendedor v = new Vendedor();
+        stmt = con.prepareStatement("SELECT * FROM vendedor WHERE codigo = ?");
+        // String query = ("SELECT * FROM cliente WHERE primeironome = '?'");
+
+        stmt.setString(1, key);
+        rs = stmt.executeQuery();
+//            stmt = con.prepareStatement(query);
+//            rs = stmt.executeQuery(query);
+        while (rs.next()) {
+            
+            v.setCodigo(rs.getInt("codigo"));
+            v.setPrimeiroNome(rs.getString("primeironome"));
+            v.setNomeDoMeio(rs.getString("nomedomeio"));
+            v.setSobrenome(rs.getString("sobrenome"));
+            v.setSenha(rs.getString("senha"));
+            v.setSexo(rs.getString("sexo"));
+            v.setQuota(rs.getFloat("quota"));
+            v.setDtContratacao(rs.getTimestamp("dtcontratacao"));
+            v.setDtNascimento(rs.getTimestamp("dtcontratacao"));
+            v.setComissao(rs.getFloat("comissao"));
+            v.setBonus(rs.getFloat("bonus"));
+        }
+
+        DatabaseConnection.closeConnection(con, stmt, rs);
+
+        return v;
+    }
+    
+    
+    
 //    public static Cliente read(int key) throws SQLException {;
 //        Connection con;
 //        con = DatabaseConnection.getConnection();

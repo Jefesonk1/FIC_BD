@@ -149,8 +149,12 @@ public class PedidoConsultar extends javax.swing.JFrame {
             int row = source.rowAtPoint( evt.getPoint() );
             int column = source.columnAtPoint( evt.getPoint() );
             String s=source.getModel().getValueAt(row, 0)+"";
-            if(evt.getClickCount()==2)
+            if(evt.getClickCount()==2){
                 JOptionPane.showMessageDialog(null, s+evt.getClickCount());
+                PedidoConsultarSub pcs = new PedidoConsultarSub(Integer.parseInt(s));
+                pcs.setVisible(true);
+                
+            }
     }//GEN-LAST:event_tbPedidosMouseClicked
  
 

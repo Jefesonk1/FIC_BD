@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import models.Cliente;
 
 import models.Pedido;
 
@@ -82,4 +83,38 @@ public class PedidoDao {
 
         return pedidos;
     }
+
+    public static Pedido readPedido(String key) throws SQLException {
+        Connection con;
+        con = DatabaseConnection.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        Pedido p = new Pedido();
+
+        stmt = con.prepareStatement("SELECT * FROM pedido WHERE codigo = ?");
+
+        stmt.setString(1, key);
+        rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            p.setCodigo(rs.getInt("codigo"));
+            p.setDtpedido(rs.getTimestamp("dtpedido"));
+            p.setDtenvio(rs.getTimestamp("dtenvio"));
+            p.setDtrecebimento(rs.getTimestamp("dtrecebimento"));
+            p.setCodigoCliente(rs.getInt("codigocliente"));
+            p.setContaCliente(rs.getString("contacliente"));
+            p.setNumeroCartaoCredito(rs.getInt("numerocartaocredito"));
+            p.setCodigoConfirmacao(rs.getString("codigoconfirmacao"));
+            p.setCodigoVendedor(rs.getInt("codigovendedor"));
+            p.setImposto(rs.getFloat("imposto"));
+            p.setEnderecoFatura(rs.getInt("enderecofatura"));
+            p.setEnderecoEntrega(rs.getInt("enderecoentrega"));
+            p.setCodigoTransportadora(rs.getInt("codigotransportadora"));
+        }
+        return p;
+    }
+
+  
+
 }

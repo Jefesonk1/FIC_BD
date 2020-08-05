@@ -1,16 +1,113 @@
 package gui;
 
+import dao.ClienteDao;
+import dao.DetalhesPedidoDao;
+import dao.EnderecoDao;
+import dao.PedidoDao;
+import dao.ProdutoDao;
+import dao.TransportadoraDao;
+import dao.VendedorDao;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
+import models.Cliente;
+import models.DetalhesPedido;
+import models.Endereco;
+import models.Pedido;
+import models.Transportadora;
+import models.Vendedor;
+
 /**
  *
  * @author Jefeson
  */
 public class PedidoConsultarSub extends javax.swing.JFrame {
 
+    private final int codigoPedido;
+
     /**
      * Creates new form PedidoConsultarSub
+     *
+     * @param codigoPedido
      */
-    public PedidoConsultarSub() {
+    public PedidoConsultarSub(int codigoPedido) {
+        this.codigoPedido = codigoPedido;
         initComponents();
+        Pedido p = null;
+        Cliente c = null;
+        Vendedor v = null;
+        Transportadora t = null;
+        Endereco eFatura = null;
+        Endereco eEntrega = null;
+        try {
+            p = PedidoDao.readPedido(codigoPedido + "");
+            c = ClienteDao.readCliente(p.getCodigoCliente() + "");
+            t = TransportadoraDao.readTransportadora(p.getCodigoTransportadora() + "");
+            v = VendedorDao.readVendedor(p.getCodigoVendedor()+"");
+            eFatura = EnderecoDao.readEndereco(p.getEnderecoFatura() + "");
+            eEntrega = EnderecoDao.readEndereco(p.getEnderecoEntrega() + "");
+
+            txtCodigoCliente.setText("" + c.getId());
+            txtPrimeiroNomeCliente.setText("" + c.getPrimeiroNome());
+            txtNomeDoMeioCliente.setText("" + c.getNomeDoMeio());
+            txtSobrenomeCliente.setText("" + c.getSobrenome());
+            txtSufixoCliente.setText("" + c.getSufixo());
+            txtTratamentoCliente.setText("" + c.getTratamento());
+            
+            txtLogradouroFatura.setText(eFatura.getLogradouro()+" "+eFatura.getComplemento());
+            txtCidadeFatura.setText(eFatura.getCidade());
+            txtEstadoFatura.setText(eFatura.getEstado());
+            txtPaisFatura.setText(eFatura.getPais());
+            txtCodigoPostalFatura.setText(eFatura.getCodigopostal());
+            
+            txtLogradouroEntrega.setText(eEntrega.getLogradouro()+" "+eEntrega.getComplemento());
+            txtCidadeEntrega.setText(eEntrega.getCidade());
+            txtEstadoEntrega.setText(eEntrega.getEstado());
+            txtPaisEntrega.setText(eEntrega.getPais());
+            txtCodigoPostalEntrega.setText(eEntrega.getCodigopostal());
+            
+            txtNomeTransportadora.setText(t.getNome());
+            txtTaxaBaseTransportadora.setText(t.getTaxaBase()+"");
+            txtTaxaBaseEnvioTransportadora.setText(t.getTaxaEnvio()+"");
+            
+            txtCodigoVendedor.setText(v.getCodigo()+"");
+            txtNomeVendedor.setText(v.getPrimeiroNome()+" "+v.getNomeDoMeio()+" "+v.getSobrenome());
+            
+            txtDtPedido.setText(p.getDtpedido()+"");
+            
+            txtContaCliente.setText(p.getContaCliente());
+            txtNumeroCartaoCredito.setText(p.getNumeroCartaoCredito()+"");
+            txtCodigoConfirmacao.setText(p.getCodigoConfirmacao());
+            
+            
+            
+            
+            List<DetalhesPedido> dp = null;
+            dp = DetalhesPedidoDao.readProduto(p.getCodigo()+"");
+            
+            
+            DefaultTableModel modeloTable = (DefaultTableModel) jTable4.getModel();
+            modeloTable.setNumRows(0);
+
+            for (Endereco e : enderecos) {
+                modeloTable.addRow(new Object[]{
+                    e.getId(),
+                    e.getLogradouro(),
+                    e.getComplemento(),
+                    e.getCidade(),
+                    e.getEstado(),
+                    e.getPais(),
+                    e.getCodigopostal()
+                });
+            }
+            
+
+        } catch (SQLException ex) {
+            Logger.getLogger(PedidoConsultarSub.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
 
     /**
@@ -22,81 +119,382 @@ public class PedidoConsultarSub extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
+        jPanel2 = new javax.swing.JPanel();
+        txtCodigoCliente = new javax.swing.JTextField();
+        txtPrimeiroNomeCliente = new javax.swing.JTextField();
+        txtNomeDoMeioCliente = new javax.swing.JTextField();
+        txtSobrenomeCliente = new javax.swing.JTextField();
+        txtTratamentoCliente = new javax.swing.JTextField();
+        txtNomeVendedor = new javax.swing.JTextField();
+        txtCodigoVendedor = new javax.swing.JTextField();
+        txtSufixoCliente = new javax.swing.JTextField();
+        txtDtPedido = new javax.swing.JTextField();
+        jTextField26 = new javax.swing.JTextField();
+        jPanel3 = new javax.swing.JPanel();
+        txtLogradouroFatura = new javax.swing.JTextField();
+        txtCidadeFatura = new javax.swing.JTextField();
+        txtPaisFatura = new javax.swing.JTextField();
+        txtEstadoFatura = new javax.swing.JTextField();
+        txtCodigoPostalFatura = new javax.swing.JTextField();
+        txtNumeroCartaoCredito = new javax.swing.JTextField();
+        txtContaCliente = new javax.swing.JTextField();
+        txtCodigoConfirmacao = new javax.swing.JTextField();
+        jPanel4 = new javax.swing.JPanel();
+        txtNomeTransportadora = new javax.swing.JTextField();
+        txtTaxaBaseTransportadora = new javax.swing.JTextField();
+        txtTaxaBaseEnvioTransportadora = new javax.swing.JTextField();
+        txtLogradouroEntrega = new javax.swing.JTextField();
+        txtCidadeEntrega = new javax.swing.JTextField();
+        txtEstadoEntrega = new javax.swing.JTextField();
+        txtPaisEntrega = new javax.swing.JTextField();
+        txtCodigoPostalEntrega = new javax.swing.JTextField();
+        jPanel5 = new javax.swing.JPanel();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        tbProdutos = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(1280, 720));
+        setResizable(false);
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        jPanel1.setBackground(new java.awt.Color(255, 153, 153));
+        jPanel1.setPreferredSize(new java.awt.Dimension(1280, 720));
+
+        jPanel2.setPreferredSize(new java.awt.Dimension(609, 345));
+        jPanel2.setRequestFocusEnabled(false);
+
+        txtCodigoCliente.setText("codigo");
+
+        txtPrimeiroNomeCliente.setText("primeiroNome");
+        txtPrimeiroNomeCliente.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtPrimeiroNomeClienteActionPerformed(evt);
+            }
+        });
+
+        txtNomeDoMeioCliente.setText("nomeDoMeio");
+
+        txtSobrenomeCliente.setText("sobrenome");
+
+        txtTratamentoCliente.setText("tratamento");
+
+        txtNomeVendedor.setText("nomeVendedor");
+
+        txtCodigoVendedor.setText("codigoVendedor");
+
+        txtSufixoCliente.setText("sufixo");
+
+        txtDtPedido.setText("dtPedido");
+
+        jTextField26.setText("total");
+
+        javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
+        jPanel2.setLayout(jPanel2Layout);
+        jPanel2Layout.setHorizontalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(43, 43, 43)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(txtSufixoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtTratamentoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtSobrenomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtNomeDoMeioCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtPrimeiroNomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(txtCodigoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addComponent(txtNomeVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, 174, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtCodigoVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, 168, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtDtPedido))))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addGap(163, 163, 163)
+                        .addComponent(jTextField26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(46, Short.MAX_VALUE))
+        );
+        jPanel2Layout.setVerticalGroup(
+            jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addGap(47, 47, 47)
+                .addComponent(txtCodigoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtPrimeiroNomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtNomeDoMeioCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtSobrenomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtTratamentoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtSufixoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
+                .addComponent(jTextField26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtNomeVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtCodigoVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtDtPedido, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(28, 28, 28))
+        );
+
+        jPanel3.setPreferredSize(new java.awt.Dimension(591, 345));
+
+        txtLogradouroFatura.setText("logradouro");
+
+        txtCidadeFatura.setText("cidade");
+        txtCidadeFatura.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCidadeFaturaActionPerformed(evt);
+            }
+        });
+
+        txtPaisFatura.setText("pais");
+
+        txtEstadoFatura.setText("estado");
+        txtEstadoFatura.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtEstadoFaturaActionPerformed(evt);
+            }
+        });
+
+        txtCodigoPostalFatura.setText("cep");
+
+        txtNumeroCartaoCredito.setText("numeroCartaoCredito");
+
+        txtContaCliente.setText("contaCliente");
+
+        txtCodigoConfirmacao.setText("codigoConfirmacao");
+        txtCodigoConfirmacao.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtCodigoConfirmacaoActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
+        jPanel3.setLayout(jPanel3Layout);
+        jPanel3Layout.setHorizontalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(61, 61, 61)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtCodigoConfirmacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtContaCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtNumeroCartaoCredito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtCodigoPostalFatura, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPaisFatura, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtEstadoFatura, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtCidadeFatura, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtLogradouroFatura, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(64, Short.MAX_VALUE))
+        );
+        jPanel3Layout.setVerticalGroup(
+            jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addGap(35, 35, 35)
+                .addComponent(txtLogradouroFatura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtCidadeFatura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtEstadoFatura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtPaisFatura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtCodigoPostalFatura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(56, 56, 56)
+                .addComponent(txtNumeroCartaoCredito, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtContaCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtCodigoConfirmacao, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(58, Short.MAX_VALUE))
+        );
+
+        jPanel4.setPreferredSize(new java.awt.Dimension(645, 345));
+
+        txtNomeTransportadora.setText("nome");
+
+        txtTaxaBaseTransportadora.setText("taxaBase");
+
+        txtTaxaBaseEnvioTransportadora.setText("taxaEnvio");
+
+        txtLogradouroEntrega.setText("logradouro");
+
+        txtCidadeEntrega.setText("cidade");
+
+        txtEstadoEntrega.setText("estado");
+
+        txtPaisEntrega.setText("pais");
+
+        txtCodigoPostalEntrega.setText("codigoPostal");
+
+        javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
+        jPanel4.setLayout(jPanel4Layout);
+        jPanel4Layout.setHorizontalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(49, 49, 49)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(txtCodigoPostalEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtLogradouroEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(jPanel4Layout.createSequentialGroup()
+                        .addComponent(txtNomeTransportadora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(40, 40, 40)
+                        .addComponent(txtTaxaBaseTransportadora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(32, 32, 32)
+                        .addComponent(txtTaxaBaseEnvioTransportadora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtCidadeEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtEstadoEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtPaisEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, 520, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(76, Short.MAX_VALUE))
+        );
+        jPanel4Layout.setVerticalGroup(
+            jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel4Layout.createSequentialGroup()
+                .addGap(26, 26, 26)
+                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtNomeTransportadora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtTaxaBaseTransportadora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtTaxaBaseEnvioTransportadora, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26)
+                .addComponent(txtLogradouroEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtCidadeEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(txtEstadoEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtPaisEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtCodigoPostalEntrega, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
+        jPanel5.setPreferredSize(new java.awt.Dimension(0, 345));
+
+        tbProdutos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
-                "Title 1", "Title 2", "Title 3", "Title 4"
+                "Quantidade", "Código", "Nome", "Preço", "Cor", "Categoria", "Tamanho", "Peso"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        jScrollPane3.setViewportView(tbProdutos);
+
+        javax.swing.GroupLayout jPanel5Layout = new javax.swing.GroupLayout(jPanel5);
+        jPanel5.setLayout(jPanel5Layout);
+        jPanel5Layout.setHorizontalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(48, 48, 48)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 513, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        jPanel5Layout.setVerticalGroup(
+            jPanel5Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel5Layout.createSequentialGroup()
+                .addGap(83, 83, 83)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 179, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addContainerGap(83, Short.MAX_VALUE))
+        );
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, 609, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.PREFERRED_SIZE, 645, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel3, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(8, 8, 8)
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jPanel5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(115, 115, 115))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addGap(40, 40, 40)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(788, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 0, Short.MAX_VALUE)
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(427, Short.MAX_VALUE)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 271, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(22, 22, 22))
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 824, Short.MAX_VALUE)
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PedidoConsultarSub.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PedidoConsultarSub.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PedidoConsultarSub.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PedidoConsultarSub.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
+    private void txtCodigoConfirmacaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCodigoConfirmacaoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCodigoConfirmacaoActionPerformed
 
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PedidoConsultarSub().setVisible(true);
-            }
-        });
-    }
+    private void txtEstadoFaturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtEstadoFaturaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtEstadoFaturaActionPerformed
+
+    private void txtCidadeFaturaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtCidadeFaturaActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtCidadeFaturaActionPerformed
+
+    private void txtPrimeiroNomeClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtPrimeiroNomeClienteActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtPrimeiroNomeClienteActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JPanel jPanel1;
+    private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel jPanel3;
+    private javax.swing.JPanel jPanel4;
+    private javax.swing.JPanel jPanel5;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTextField jTextField26;
+    private javax.swing.JTable tbProdutos;
+    private javax.swing.JTextField txtCidadeEntrega;
+    private javax.swing.JTextField txtCidadeFatura;
+    private javax.swing.JTextField txtCodigoCliente;
+    private javax.swing.JTextField txtCodigoConfirmacao;
+    private javax.swing.JTextField txtCodigoPostalEntrega;
+    private javax.swing.JTextField txtCodigoPostalFatura;
+    private javax.swing.JTextField txtCodigoVendedor;
+    private javax.swing.JTextField txtContaCliente;
+    private javax.swing.JTextField txtDtPedido;
+    private javax.swing.JTextField txtEstadoEntrega;
+    private javax.swing.JTextField txtEstadoFatura;
+    private javax.swing.JTextField txtLogradouroEntrega;
+    private javax.swing.JTextField txtLogradouroFatura;
+    private javax.swing.JTextField txtNomeDoMeioCliente;
+    private javax.swing.JTextField txtNomeTransportadora;
+    private javax.swing.JTextField txtNomeVendedor;
+    private javax.swing.JTextField txtNumeroCartaoCredito;
+    private javax.swing.JTextField txtPaisEntrega;
+    private javax.swing.JTextField txtPaisFatura;
+    private javax.swing.JTextField txtPrimeiroNomeCliente;
+    private javax.swing.JTextField txtSobrenomeCliente;
+    private javax.swing.JTextField txtSufixoCliente;
+    private javax.swing.JTextField txtTaxaBaseEnvioTransportadora;
+    private javax.swing.JTextField txtTaxaBaseTransportadora;
+    private javax.swing.JTextField txtTratamentoCliente;
     // End of variables declaration//GEN-END:variables
 }

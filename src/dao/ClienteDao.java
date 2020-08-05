@@ -40,6 +40,38 @@ public class ClienteDao {
 
         return clientes;
     }
+    
+    
+    public static Cliente readCliente(String key) throws SQLException {
+        Connection con;
+        con = DatabaseConnection.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        Cliente a = new Cliente();
+
+        stmt = con.prepareStatement("SELECT * FROM cliente WHERE codigo = ?");
+
+        stmt.setString(1, key);
+        rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            
+
+            a.setId(rs.getInt("codigo"));
+            a.setPrimeiroNome(rs.getString("primeironome"));
+            a.setNomeDoMeio(rs.getString("nomedomeio"));
+            a.setSobrenome(rs.getString("sobrenome"));
+            a.setTratamento(rs.getString("tratamento"));
+            a.setSufixo(rs.getString("sufixo"));
+            a.setSenha(rs.getString("senha"));
+        }
+
+        return a;
+    }
+    
+    
+    
 
     public static List<Endereco> readEndereco(int key) throws SQLException {
         Connection con;
@@ -74,8 +106,8 @@ public class ClienteDao {
         con = DatabaseConnection.getConnection();
         PreparedStatement stmt = null;
         ResultSet rs = null;
-         String generatedColumns[] = { "CODIGO" };
-        stmt = con.prepareStatement("INSERT INTO cliente (codigo, primeironome, nomedomeio, sobrenome, tratamento, sufixo, senha) VALUES ((SELECT max(codigo)+1 FROM cliente) ,?,?,?,?,?,?)",generatedColumns);
+        String generatedColumns[] = {"CODIGO"};
+        stmt = con.prepareStatement("INSERT INTO cliente (codigo, primeironome, nomedomeio, sobrenome, tratamento, sufixo, senha) VALUES ((SELECT max(codigo)+1 FROM cliente) ,?,?,?,?,?,?)", generatedColumns);
         stmt.setString(1, p.getPrimeiroNome());
         stmt.setString(2, p.getNomeDoMeio());
         stmt.setString(3, p.getSobrenome());
@@ -86,10 +118,10 @@ public class ClienteDao {
 
         try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
             if (generatedKeys.next()) {
-                  long codigo = generatedKeys.getLong(1);
-                    System.out.println(codigo);
-                    stmt.close();
-                     return codigo;
+                long codigo = generatedKeys.getLong(1);
+                System.out.println(codigo);
+                stmt.close();
+                return codigo;
             } else {
                 stmt.close();
                 throw new SQLException("Creating user failed, no ID obtained.");

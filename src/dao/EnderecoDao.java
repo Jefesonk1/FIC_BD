@@ -4,7 +4,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import models.Cliente;
@@ -40,6 +39,34 @@ public class EnderecoDao {
         }
 
         return clientes;
+    }
+    
+    
+     public static Endereco readEndereco(String key) throws SQLException {
+        Connection con;
+        con = DatabaseConnection.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        Endereco e = new Endereco();
+
+        stmt = con.prepareStatement("SELECT * FROM endereco WHERE id = ?");
+
+        stmt.setString(1, key);
+        rs = stmt.executeQuery();
+
+        while (rs.next()) {
+
+            e.setId(rs.getInt("id"));
+            e.setLogradouro(rs.getString("logradouro"));
+            e.setComplemento(rs.getString("complemento"));
+            e.setCidade(rs.getString("cidade"));
+            e.setEstado(rs.getString("estado"));
+            e.setPais(rs.getString("pais"));
+            e.setCodigopostal(rs.getString("codigopostal"));
+        }
+
+        return e;
     }
 
     public static long create(Endereco e) throws SQLException {
