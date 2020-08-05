@@ -6,6 +6,9 @@ import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
 import models.Pedido;
 import models.Transportadora;
@@ -35,7 +38,6 @@ public class PedidoConsultar extends javax.swing.JFrame {
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tbPedidos = new javax.swing.JTable();
-        jButton1 = new javax.swing.JButton();
         txtPedidos = new javax.swing.JTextField();
         btnPedidos = new javax.swing.JButton();
 
@@ -48,12 +50,23 @@ public class PedidoConsultar extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Data Pedido", "Nome Cliente", "Valor", "Title 4"
+                "Codigo", "Data Pedido", "Nome Cliente", "Valor", "Title 5"
             }
-        ));
-        jScrollPane1.setViewportView(tbPedidos);
+        ) {
+            boolean[] canEdit = new boolean [] {
+                false, false, false, false, false
+            };
 
-        jButton1.setText("jButton1");
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return canEdit [columnIndex];
+            }
+        });
+        tbPedidos.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tbPedidosMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tbPedidos);
 
         txtPedidos.setText("jTextField1");
 
@@ -76,9 +89,7 @@ public class PedidoConsultar extends javax.swing.JFrame {
                         .addComponent(txtPedidos, javax.swing.GroupLayout.PREFERRED_SIZE, 341, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(btnPedidos, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
-                .addGap(182, 182, 182)
-                .addComponent(jButton1)
-                .addContainerGap(519, Short.MAX_VALUE))
+                .addContainerGap(774, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -86,8 +97,7 @@ public class PedidoConsultar extends javax.swing.JFrame {
                 .addGap(55, 55, 55)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtPedidos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnPedidos)
-                    .addComponent(jButton1))
+                    .addComponent(btnPedidos))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(204, Short.MAX_VALUE))
@@ -111,6 +121,8 @@ public class PedidoConsultar extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+ 
+    
     private void btnPedidosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPedidosActionPerformed
         try {
             // TODO add your handling code here:
@@ -122,6 +134,7 @@ public class PedidoConsultar extends javax.swing.JFrame {
 
             for (Pedido p : pedidos) {
                 modeloTable.addRow(new Object[]{
+                    p.getCodigo(),
                     p.getDtpedido()
                 });
             }
@@ -129,6 +142,17 @@ public class PedidoConsultar extends javax.swing.JFrame {
             Logger.getLogger(PedidoConsultar.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnPedidosActionPerformed
+
+    private void tbPedidosMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tbPedidosMouseClicked
+        // TODO add your handling code here:
+             JTable source = (JTable)evt.getSource();
+            int row = source.rowAtPoint( evt.getPoint() );
+            int column = source.columnAtPoint( evt.getPoint() );
+            String s=source.getModel().getValueAt(row, 0)+"";
+            if(evt.getClickCount()==2)
+                JOptionPane.showMessageDialog(null, s+evt.getClickCount());
+    }//GEN-LAST:event_tbPedidosMouseClicked
+ 
 
     /**
      * @param args the command line arguments
@@ -167,7 +191,6 @@ public class PedidoConsultar extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnPedidos;
-    private javax.swing.JButton jButton1;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable tbPedidos;
