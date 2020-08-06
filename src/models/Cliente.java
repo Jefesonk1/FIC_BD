@@ -8,7 +8,7 @@ import java.util.List;
  */
 public class Cliente {
 
-    private int id;
+    private long codigo;
     private String tratamento;
     private String primeiroNome;
     private String nomeDoMeio;
@@ -17,20 +17,12 @@ public class Cliente {
     private String senha;
     private List<Endereco> endereco;
 
-    public List<Endereco> getEndereco() {
-        return endereco;
+    public long getCodigo() {
+        return codigo;
     }
 
-    public void setEndereco(List<Endereco> endereco) {
-        this.endereco = endereco;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
+    public void setCodigo(long codigo) {
+        this.codigo = codigo;
     }
 
     public String getTratamento() {
@@ -80,4 +72,14 @@ public class Cliente {
     public void setSenha(String senha) {
         this.senha = senha;
     }
+
+    public List<Endereco> getEndereco() {
+        return endereco;
+    }
+
+    public void setEndereco(List<Endereco> endereco) {
+        this.endereco = endereco;
+    }
+
+    
 }

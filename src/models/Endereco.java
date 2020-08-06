@@ -5,19 +5,28 @@ package models;
  * @author Jefeson
  */
 public class Endereco {
-    private int id;
+    private long id;
     private String logradouro;
     private String complemento;
     private String cidade;
     private String estado;
     private String pais;
     private String codigopostal;
+    private String tipoEndereco;
 
-    public int getId() {
+    public String getTipoEndereco() {
+        return tipoEndereco;
+    }
+
+    public void setTipoEndereco(String tipoEndereco) {
+        this.tipoEndereco = tipoEndereco;
+    }
+
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 

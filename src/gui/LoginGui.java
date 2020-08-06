@@ -137,7 +137,7 @@ public class LoginGui extends javax.swing.JFrame {
             if(resp){
                 this.dispose();
                 Principal p = new Principal();
-                p.setCodigo(Integer.parseInt(txtCodigo.getText()));
+                p.setCodigo(Long.parseLong(txtCodigo.getText()));
                 p.setVisible(true);
                 this.dispose();
             }

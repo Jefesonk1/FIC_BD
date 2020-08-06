@@ -1,6 +1,7 @@
 package models;
 
 import java.sql.Timestamp;
+import java.util.List;
 
 /**
  *
@@ -8,25 +9,67 @@ import java.sql.Timestamp;
  */
 public class Pedido {
 
-    private int codigo;
+    private long codigo;
     private Timestamp dtpedido;
     private Timestamp dtenvio;
     private Timestamp dtrecebimento;
-    private int codigoCliente;
+    private long codigoCliente;
     private String contaCliente;
-    private int numeroCartaoCredito;
+    private long numeroCartaoCredito;
     private String codigoConfirmacao;
-    private int codigoVendedor;
+    private long codigoVendedor;
     private float imposto;
-    private int enderecoFatura;
-    private int enderecoEntrega;
-    private int codigoTransportadora;
+    private long codigoEnderecoFatura;
+    private long CodigoEnderecoEntrega;
+    private long codigoTransportadora;
+    private List<Produto> produtos;
+    private Cliente cliente;
+    private Transportadora trasportadora;
+    private Endereco enderecoFatura;
+    private Endereco enderecoEntrega;
+    private Vendedor vendedor;
 
-    public int getCodigo() {
+    
+    public Pedido(){
+        cliente = new Cliente();
+        trasportadora = new Transportadora();
+        enderecoFatura = new Endereco();
+        enderecoEntrega = new Endereco();
+        vendedor = new Vendedor();      
+        
+    }
+    
+    public float somarPedido(){
+        float soma=0.0f;
+        
+        for (Produto produto : produtos) {
+            soma += produto.getPreco()*produto.getQuantidade()-produto.getDesconto();
+        }
+        soma += imposto;
+        return soma;
+    }
+    
+    public Vendedor getVendedor() {
+        return vendedor;
+    }
+
+    public void setVendedor(Vendedor vendedor) {
+        this.vendedor = vendedor;
+    }
+
+    public List<Produto> getProdutos() {
+        return produtos;
+    }
+
+    public void setProdutos(List<Produto> produtos) {
+        this.produtos = produtos;
+    }
+
+    public long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(int codigo) {
+    public void setCodigo(long codigo) {
         this.codigo = codigo;
     }
 
@@ -54,11 +97,11 @@ public class Pedido {
         this.dtrecebimento = dtrecebimento;
     }
 
-    public int getCodigoCliente() {
+    public long getCodigoCliente() {
         return codigoCliente;
     }
 
-    public void setCodigoCliente(int codigoCliente) {
+    public void setCodigoCliente(long codigoCliente) {
         this.codigoCliente = codigoCliente;
     }
 
@@ -70,11 +113,11 @@ public class Pedido {
         this.contaCliente = contaCliente;
     }
 
-    public int getNumeroCartaoCredito() {
+    public long getNumeroCartaoCredito() {
         return numeroCartaoCredito;
     }
 
-    public void setNumeroCartaoCredito(int numeroCartaoCredito) {
+    public void setNumeroCartaoCredito(long numeroCartaoCredito) {
         this.numeroCartaoCredito = numeroCartaoCredito;
     }
 
@@ -86,11 +129,11 @@ public class Pedido {
         this.codigoConfirmacao = codigoConfirmacao;
     }
 
-    public int getCodigoVendedor() {
+    public long getCodigoVendedor() {
         return codigoVendedor;
     }
 
-    public void setCodigoVendedor(int codigoVendedor) {
+    public void setCodigoVendedor(long codigoVendedor) {
         this.codigoVendedor = codigoVendedor;
     }
 
@@ -102,27 +145,62 @@ public class Pedido {
         this.imposto = imposto;
     }
 
-    public int getEnderecoFatura() {
-        return enderecoFatura;
+    public long getCodigoEnderecoFatura() {
+        return codigoEnderecoFatura;
     }
 
-    public void setEnderecoFatura(int enderecoFatura) {
-        this.enderecoFatura = enderecoFatura;
+    public void setCodigoEnderecoFatura(long codigoEnderecoFatura) {
+        this.codigoEnderecoFatura = codigoEnderecoFatura;
     }
 
-    public int getEnderecoEntrega() {
-        return enderecoEntrega;
+    public long getCodigoEnderecoEntrega() {
+        return CodigoEnderecoEntrega;
     }
 
-    public void setEnderecoEntrega(int enderecoEntrega) {
-        this.enderecoEntrega = enderecoEntrega;
+    public void setCodigoEnderecoEntrega(long CodigoEnderecoEntrega) {
+        this.CodigoEnderecoEntrega = CodigoEnderecoEntrega;
     }
 
-    public int getCodigoTransportadora() {
+    public long getCodigoTransportadora() {
         return codigoTransportadora;
     }
 
-    public void setCodigoTransportadora(int codigoTransportadora) {
+    public void setCodigoTransportadora(long codigoTransportadora) {
         this.codigoTransportadora = codigoTransportadora;
     }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public Transportadora getTrasportadora() {
+        return trasportadora;
+    }
+
+    public void setTrasportadora(Transportadora trasportadora) {
+        this.trasportadora = trasportadora;
+    }
+
+    public Endereco getEnderecoFatura() {
+        return enderecoFatura;
+    }
+
+    public void setEnderecoFatura(Endereco enderecoFatura) {
+        this.enderecoFatura = enderecoFatura;
+    }
+
+    public Endereco getEnderecoEntrega() {
+        return enderecoEntrega;
+    }
+
+    public void setEnderecoEntrega(Endereco enderecoEntrega) {
+        this.enderecoEntrega = enderecoEntrega;
+    }
+
+   
+
 }

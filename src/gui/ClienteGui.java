@@ -116,7 +116,7 @@ public class ClienteGui extends javax.swing.JFrame {
         
         for(Cliente p: clientes) {
             modeloTable.addRow(new Object[]{
-                p.getId(),
+                p.getCodigo(),
                 p.getPrimeiroNome(),
                 p.getNomeDoMeio(),
                 p.getSobrenome(),

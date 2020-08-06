@@ -7,13 +7,13 @@ import javax.swing.JButton;
  * @author Jefeson
  */
 public class PedidoOptions extends javax.swing.JFrame {
-    private int codigoVendedor;
+    private long codigoVendedor;
 
-    public int getCodigoVendedor() {
+    public long getCodigoVendedor() {
         return codigoVendedor;
     }
 
-    public void setCodigoVendedor(int codigoVendedor) {
+    public void setCodigoVendedor(long codigoVendedor) {
         this.codigoVendedor = codigoVendedor;
     }
 
@@ -130,6 +130,7 @@ public class PedidoOptions extends javax.swing.JFrame {
     private void btnConsultarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConsultarActionPerformed
         // TODO add your handling code here:
         PedidoConsultar pc = new PedidoConsultar();
+        pc.setCodigoVendedor(codigoVendedor);
         pc.setVisible(true);
     }//GEN-LAST:event_btnConsultarActionPerformed
 

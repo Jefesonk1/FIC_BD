@@ -1,7 +1,7 @@
 package gui;
 
 import dao.ClienteDao;
-import dao.DetalhesPedidoDao;
+
 import dao.EnderecoDao;
 import dao.PedidoDao;
 import dao.ProdutoDao;
@@ -13,9 +13,10 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.table.DefaultTableModel;
 import models.Cliente;
-import models.DetalhesPedido;
+
 import models.Endereco;
 import models.Pedido;
+import models.Produto;
 import models.Transportadora;
 import models.Vendedor;
 
@@ -25,85 +26,76 @@ import models.Vendedor;
  */
 public class PedidoConsultarSub extends javax.swing.JFrame {
 
-    private final int codigoPedido;
+    private final long codigoPedido;
+    private final long codigoVendedor;
 
     /**
      * Creates new form PedidoConsultarSub
      *
      * @param codigoPedido
+     * @param codigoVendedor
      */
-    public PedidoConsultarSub(int codigoPedido) {
-        this.codigoPedido = codigoPedido;
-        initComponents();
-        Pedido p = null;
-        Cliente c = null;
-        Vendedor v = null;
-        Transportadora t = null;
-        Endereco eFatura = null;
-        Endereco eEntrega = null;
-        try {
-            p = PedidoDao.readPedido(codigoPedido + "");
-            c = ClienteDao.readCliente(p.getCodigoCliente() + "");
-            t = TransportadoraDao.readTransportadora(p.getCodigoTransportadora() + "");
-            v = VendedorDao.readVendedor(p.getCodigoVendedor()+"");
-            eFatura = EnderecoDao.readEndereco(p.getEnderecoFatura() + "");
-            eEntrega = EnderecoDao.readEndereco(p.getEnderecoEntrega() + "");
+    public PedidoConsultarSub(long codigoPedido, long codigoVendedor) {
 
-            txtCodigoCliente.setText("" + c.getId());
-            txtPrimeiroNomeCliente.setText("" + c.getPrimeiroNome());
-            txtNomeDoMeioCliente.setText("" + c.getNomeDoMeio());
-            txtSobrenomeCliente.setText("" + c.getSobrenome());
-            txtSufixoCliente.setText("" + c.getSufixo());
-            txtTratamentoCliente.setText("" + c.getTratamento());
-            
-            txtLogradouroFatura.setText(eFatura.getLogradouro()+" "+eFatura.getComplemento());
-            txtCidadeFatura.setText(eFatura.getCidade());
-            txtEstadoFatura.setText(eFatura.getEstado());
-            txtPaisFatura.setText(eFatura.getPais());
-            txtCodigoPostalFatura.setText(eFatura.getCodigopostal());
-            
-            txtLogradouroEntrega.setText(eEntrega.getLogradouro()+" "+eEntrega.getComplemento());
-            txtCidadeEntrega.setText(eEntrega.getCidade());
-            txtEstadoEntrega.setText(eEntrega.getEstado());
-            txtPaisEntrega.setText(eEntrega.getPais());
-            txtCodigoPostalEntrega.setText(eEntrega.getCodigopostal());
-            
-            txtNomeTransportadora.setText(t.getNome());
-            txtTaxaBaseTransportadora.setText(t.getTaxaBase()+"");
-            txtTaxaBaseEnvioTransportadora.setText(t.getTaxaEnvio()+"");
-            
-            txtCodigoVendedor.setText(v.getCodigo()+"");
-            txtNomeVendedor.setText(v.getPrimeiroNome()+" "+v.getNomeDoMeio()+" "+v.getSobrenome());
-            
-            txtDtPedido.setText(p.getDtpedido()+"");
-            
+        initComponents();
+        this.codigoPedido = codigoPedido;
+        this.codigoVendedor = codigoVendedor;
+        Pedido p = null;
+        try {
+            p = PedidoDao.readByCodigoPedido(codigoPedido);
+
+            txtCodigoCliente.setText("" + p.getCliente().getCodigo());
+            txtPrimeiroNomeCliente.setText(p.getCliente().getPrimeiroNome());
+            txtNomeDoMeioCliente.setText(p.getCliente().getNomeDoMeio());
+            txtSobrenomeCliente.setText(p.getCliente().getSobrenome());
+            txtSufixoCliente.setText(p.getCliente().getSufixo());
+            txtTratamentoCliente.setText(p.getCliente().getTratamento());
+
+            txtLogradouroFatura.setText(p.getEnderecoFatura().getLogradouro() + " " + p.getEnderecoFatura().getComplemento());
+            txtCidadeFatura.setText(p.getEnderecoFatura().getCidade());
+            txtEstadoFatura.setText(p.getEnderecoFatura().getEstado());
+            txtPaisFatura.setText(p.getEnderecoFatura().getPais());
+            txtCodigoPostalFatura.setText(p.getEnderecoFatura().getCodigopostal());
+
+            txtLogradouroEntrega.setText(p.getEnderecoEntrega().getLogradouro() + " " + p.getEnderecoEntrega().getComplemento());
+            txtCidadeEntrega.setText(p.getEnderecoEntrega().getCidade());
+            txtEstadoEntrega.setText(p.getEnderecoEntrega().getEstado());
+            txtPaisEntrega.setText(p.getEnderecoEntrega().getPais());
+            txtCodigoPostalEntrega.setText(p.getEnderecoEntrega().getCodigopostal());
+
+            txtNomeTransportadora.setText(p.getTrasportadora().getNome());
+            txtTaxaBaseTransportadora.setText("" + p.getTrasportadora().getTaxaBase());
+            txtTaxaBaseEnvioTransportadora.setText("" + p.getTrasportadora().getTaxaEnvio());
+
+            txtCodigoVendedor.setText("" + p.getVendedor().getCodigo());
+            txtNomeVendedor.setText(p.getVendedor().getPrimeiroNome() + " " + p.getVendedor().getNomeDoMeio() + " " + p.getVendedor().getSobrenome());
+
+            txtDtPedido.setText("" + p.getDtpedido());
+
             txtContaCliente.setText(p.getContaCliente());
-            txtNumeroCartaoCredito.setText(p.getNumeroCartaoCredito()+"");
+            txtNumeroCartaoCredito.setText("" + p.getNumeroCartaoCredito());
             txtCodigoConfirmacao.setText(p.getCodigoConfirmacao());
+
+//            List<DetalhesPedido> dp = null;
+//            dp = DetalhesPedidoDao.readProduto(p.getCodigo()+"");
+//            
             
-            
-            
-            
-            List<DetalhesPedido> dp = null;
-            dp = DetalhesPedidoDao.readProduto(p.getCodigo()+"");
-            
-            
-            DefaultTableModel modeloTable = (DefaultTableModel) jTable4.getModel();
+            DefaultTableModel modeloTable = (DefaultTableModel) tbProdutos.getModel();
             modeloTable.setNumRows(0);
 
-            for (Endereco e : enderecos) {
+            for (Produto prod : p.getProdutos()) {
                 modeloTable.addRow(new Object[]{
-                    e.getId(),
-                    e.getLogradouro(),
-                    e.getComplemento(),
-                    e.getCidade(),
-                    e.getEstado(),
-                    e.getPais(),
-                    e.getCodigopostal()
+                    prod.getQuantidade(),
+                    prod.getCodigo(),
+                    prod.getNome(),
+                    prod.getPreco(),
+                    prod.getCor(),
+                    prod.getCategoria(),
+                    prod.getTamanho(),
+                    prod.getPeso()
                 });
             }
-            
-
+            txtTotal.setText("$ "+p.somarPedido()+"");
         } catch (SQLException ex) {
             Logger.getLogger(PedidoConsultarSub.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -130,7 +122,7 @@ public class PedidoConsultarSub extends javax.swing.JFrame {
         txtCodigoVendedor = new javax.swing.JTextField();
         txtSufixoCliente = new javax.swing.JTextField();
         txtDtPedido = new javax.swing.JTextField();
-        jTextField26 = new javax.swing.JTextField();
+        txtTotal = new javax.swing.JTextField();
         jPanel3 = new javax.swing.JPanel();
         txtLogradouroFatura = new javax.swing.JTextField();
         txtCidadeFatura = new javax.swing.JTextField();
@@ -163,8 +155,10 @@ public class PedidoConsultarSub extends javax.swing.JFrame {
         jPanel2.setPreferredSize(new java.awt.Dimension(609, 345));
         jPanel2.setRequestFocusEnabled(false);
 
+        txtCodigoCliente.setEditable(false);
         txtCodigoCliente.setText("codigo");
 
+        txtPrimeiroNomeCliente.setEditable(false);
         txtPrimeiroNomeCliente.setText("primeiroNome");
         txtPrimeiroNomeCliente.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -172,21 +166,29 @@ public class PedidoConsultarSub extends javax.swing.JFrame {
             }
         });
 
+        txtNomeDoMeioCliente.setEditable(false);
         txtNomeDoMeioCliente.setText("nomeDoMeio");
 
+        txtSobrenomeCliente.setEditable(false);
         txtSobrenomeCliente.setText("sobrenome");
 
+        txtTratamentoCliente.setEditable(false);
         txtTratamentoCliente.setText("tratamento");
 
+        txtNomeVendedor.setEditable(false);
         txtNomeVendedor.setText("nomeVendedor");
 
+        txtCodigoVendedor.setEditable(false);
         txtCodigoVendedor.setText("codigoVendedor");
 
+        txtSufixoCliente.setEditable(false);
         txtSufixoCliente.setText("sufixo");
 
+        txtDtPedido.setEditable(false);
         txtDtPedido.setText("dtPedido");
 
-        jTextField26.setText("total");
+        txtTotal.setEditable(false);
+        txtTotal.setText("total");
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
@@ -211,7 +213,7 @@ public class PedidoConsultarSub extends javax.swing.JFrame {
                                 .addComponent(txtDtPedido))))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(163, 163, 163)
-                        .addComponent(jTextField26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(txtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 163, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(46, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -224,13 +226,13 @@ public class PedidoConsultarSub extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtNomeDoMeioCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtSobrenomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtSobrenomeCliente, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtTratamentoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtSufixoCliente, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 62, Short.MAX_VALUE)
-                .addComponent(jTextField26, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(txtNomeVendedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -241,8 +243,10 @@ public class PedidoConsultarSub extends javax.swing.JFrame {
 
         jPanel3.setPreferredSize(new java.awt.Dimension(591, 345));
 
+        txtLogradouroFatura.setEditable(false);
         txtLogradouroFatura.setText("logradouro");
 
+        txtCidadeFatura.setEditable(false);
         txtCidadeFatura.setText("cidade");
         txtCidadeFatura.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -250,8 +254,10 @@ public class PedidoConsultarSub extends javax.swing.JFrame {
             }
         });
 
+        txtPaisFatura.setEditable(false);
         txtPaisFatura.setText("pais");
 
+        txtEstadoFatura.setEditable(false);
         txtEstadoFatura.setText("estado");
         txtEstadoFatura.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -259,12 +265,16 @@ public class PedidoConsultarSub extends javax.swing.JFrame {
             }
         });
 
+        txtCodigoPostalFatura.setEditable(false);
         txtCodigoPostalFatura.setText("cep");
 
+        txtNumeroCartaoCredito.setEditable(false);
         txtNumeroCartaoCredito.setText("numeroCartaoCredito");
 
+        txtContaCliente.setEditable(false);
         txtContaCliente.setText("contaCliente");
 
+        txtCodigoConfirmacao.setEditable(false);
         txtCodigoConfirmacao.setText("codigoConfirmacao");
         txtCodigoConfirmacao.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -299,7 +309,7 @@ public class PedidoConsultarSub extends javax.swing.JFrame {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtEstadoFatura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(txtPaisFatura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addComponent(txtPaisFatura, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(txtCodigoPostalFatura, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(56, 56, 56)
@@ -313,20 +323,28 @@ public class PedidoConsultarSub extends javax.swing.JFrame {
 
         jPanel4.setPreferredSize(new java.awt.Dimension(645, 345));
 
+        txtNomeTransportadora.setEditable(false);
         txtNomeTransportadora.setText("nome");
 
+        txtTaxaBaseTransportadora.setEditable(false);
         txtTaxaBaseTransportadora.setText("taxaBase");
 
+        txtTaxaBaseEnvioTransportadora.setEditable(false);
         txtTaxaBaseEnvioTransportadora.setText("taxaEnvio");
 
+        txtLogradouroEntrega.setEditable(false);
         txtLogradouroEntrega.setText("logradouro");
 
+        txtCidadeEntrega.setEditable(false);
         txtCidadeEntrega.setText("cidade");
 
+        txtEstadoEntrega.setEditable(false);
         txtEstadoEntrega.setText("estado");
 
+        txtPaisEntrega.setEditable(false);
         txtPaisEntrega.setText("pais");
 
+        txtCodigoPostalEntrega.setEditable(false);
         txtCodigoPostalEntrega.setText("codigoPostal");
 
         javax.swing.GroupLayout jPanel4Layout = new javax.swing.GroupLayout(jPanel4);
@@ -469,7 +487,6 @@ public class PedidoConsultarSub extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel4;
     private javax.swing.JPanel jPanel5;
     private javax.swing.JScrollPane jScrollPane3;
-    private javax.swing.JTextField jTextField26;
     private javax.swing.JTable tbProdutos;
     private javax.swing.JTextField txtCidadeEntrega;
     private javax.swing.JTextField txtCidadeFatura;
@@ -495,6 +512,7 @@ public class PedidoConsultarSub extends javax.swing.JFrame {
     private javax.swing.JTextField txtSufixoCliente;
     private javax.swing.JTextField txtTaxaBaseEnvioTransportadora;
     private javax.swing.JTextField txtTaxaBaseTransportadora;
+    private javax.swing.JTextField txtTotal;
     private javax.swing.JTextField txtTratamentoCliente;
     // End of variables declaration//GEN-END:variables
 }

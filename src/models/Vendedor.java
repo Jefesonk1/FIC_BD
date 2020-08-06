@@ -7,7 +7,8 @@ import java.sql.Timestamp;
  * @author Jefeson
  */
 public class Vendedor {
-    private int codigo;
+
+    private long codigo;
     private String primeiroNome;
     private String nomeDoMeio;
     private String sobrenome;
@@ -19,11 +20,11 @@ public class Vendedor {
     private float bonus;
     private float comissao;
 
-    public int getCodigo() {
+    public long getCodigo() {
         return codigo;
     }
 
-    public void setCodigo(int codigo) {
+    public void setCodigo(long codigo) {
         this.codigo = codigo;
     }
 

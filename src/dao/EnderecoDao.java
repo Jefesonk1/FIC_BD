@@ -27,7 +27,7 @@ public class EnderecoDao {
         while (rs.next()) {
             Cliente a = new Cliente();
 
-            a.setId(rs.getInt("codigo"));
+            a.setCodigo(rs.getLong("codigo"));
             a.setPrimeiroNome(rs.getString("primeironome"));
             a.setNomeDoMeio(rs.getString("nomedomeio"));
             a.setSobrenome(rs.getString("sobrenome"));
@@ -40,9 +40,8 @@ public class EnderecoDao {
 
         return clientes;
     }
-    
-    
-     public static Endereco readEndereco(String key) throws SQLException {
+
+    public static Endereco readEndereco(String key) throws SQLException {
         Connection con;
         con = DatabaseConnection.getConnection();
         PreparedStatement stmt = null;
@@ -74,7 +73,7 @@ public class EnderecoDao {
         con = DatabaseConnection.getConnection();
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        String generatedColumns[] = { "ID" };
+        String generatedColumns[] = {"ID"};
         stmt = con.prepareStatement("INSERT INTO endereco (id, logradouro, complemento, cidade, estado, pais, codigopostal) VALUES ((SELECT max(id)+1 FROM endereco) ,?,?,?,?,?,?)", generatedColumns);
         stmt.setString(1, e.getLogradouro());
         stmt.setString(2, e.getComplemento());
@@ -86,23 +85,36 @@ public class EnderecoDao {
 
         try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
             if (generatedKeys.next()) {
-                  long id = generatedKeys.getLong(1);
-                    System.out.println(id);
-                    stmt.close();
-                     return id;
+                long id = generatedKeys.getLong(1);
+                System.out.println(id);
+                stmt.close();
+                return id;
             } else {
                 stmt.close();
                 throw new SQLException("Creating user failed, no ID obtained.");
             }
         }
 
-        
-       
+    }
+
+    public static void create(Endereco e, Cliente c) throws SQLException {
+        Connection con;
+        con = DatabaseConnection.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+        stmt = con.prepareStatement("INSERT INTO clienteendereco (codigocliente, idendereco, tipoendereco) VALUES (?,?,?)");
+        stmt.setLong(1, c.getCodigo());
+        stmt.setLong(2, e.getId());
+        stmt.setString(3, e.getTipoEndereco());
+        rs = stmt.executeQuery();
+
+        stmt.close();
+        rs.close();
+
+    }
 
 //            stmt = con.prepareStatement("SELECT MAX(codigo) FROM cliente;");
 //            rs = stmt.executeQuery();
-    }
-
     public static void delete(int idCliente) throws SQLException {
         Connection con;
         con = DatabaseConnection.getConnection();

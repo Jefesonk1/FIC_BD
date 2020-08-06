@@ -27,7 +27,7 @@ public class ClienteDao {
         while (rs.next()) {
             Cliente a = new Cliente();
 
-            a.setId(rs.getInt("codigo"));
+            a.setCodigo(rs.getLong("codigo"));
             a.setPrimeiroNome(rs.getString("primeironome"));
             a.setNomeDoMeio(rs.getString("nomedomeio"));
             a.setSobrenome(rs.getString("sobrenome"));
@@ -58,7 +58,7 @@ public class ClienteDao {
         while (rs.next()) {
             
 
-            a.setId(rs.getInt("codigo"));
+            a.setCodigo(rs.getLong("codigo"));
             a.setPrimeiroNome(rs.getString("primeironome"));
             a.setNomeDoMeio(rs.getString("nomedomeio"));
             a.setSobrenome(rs.getString("sobrenome"));

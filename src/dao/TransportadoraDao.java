@@ -28,7 +28,7 @@ public class TransportadoraDao {
         while (rs.next()) {
             Transportadora t = new Transportadora();
 
-            t.setCodigo(rs.getInt("codigo"));
+            t.setCodigo(rs.getLong("codigo"));
             t.setNome(rs.getString("nome"));
             t.setTaxaBase(rs.getFloat("taxabase"));
             t.setTaxaEnvio(rs.getFloat("taxaenvio"));
@@ -55,7 +55,7 @@ public class TransportadoraDao {
         rs = stmt.executeQuery();
         while (rs.next()) {
 
-            t.setCodigo(rs.getInt("codigo"));
+            t.setCodigo(rs.getLong("codigo"));
             t.setNome(rs.getString("nome"));
             t.setTaxaBase(rs.getFloat("taxabase"));
             t.setTaxaEnvio(rs.getFloat("taxaenvio"));

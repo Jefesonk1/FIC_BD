@@ -6,7 +6,8 @@ import java.sql.Timestamp;
  *
  * @author Jefeson
  */
-public class Produto {
+public class Produto extends ModeloProduto {
+
     private String codigo;
     private String nome;
     private String cor;
@@ -14,18 +15,19 @@ public class Produto {
     private float preco;
     private String tamanho;
     private float peso;
-    private int codigoModelo;
-    private int codigoCategoria;
+    private long codigoCategoria;
     private Timestamp dtInicioVenda;
     private Timestamp dtFimVenda;
-    private String Categoria;
+    private String categoria;
+    private int quantidade;
+    private float desconto;
 
-    public String getCategoria() {
-        return Categoria;
+    public float getDesconto() {
+        return desconto;
     }
 
-    public void setCategoria(String Categoria) {
-        this.Categoria = Categoria;
+    public void setDesconto(float desconto) {
+        this.desconto = desconto;
     }
 
     public String getCodigo() {
@@ -84,19 +86,11 @@ public class Produto {
         this.peso = peso;
     }
 
-    public int getCodigoModelo() {
-        return codigoModelo;
-    }
-
-    public void setCodigoModelo(int codigoModelo) {
-        this.codigoModelo = codigoModelo;
-    }
-
-    public int getCodigoCategoria() {
+    public long getCodigoCategoria() {
         return codigoCategoria;
     }
 
-    public void setCodigoCategoria(int codigoCategoria) {
+    public void setCodigoCategoria(long codigoCategoria) {
         this.codigoCategoria = codigoCategoria;
     }
 
@@ -115,4 +109,21 @@ public class Produto {
     public void setDtFimVenda(Timestamp dtFimVenda) {
         this.dtFimVenda = dtFimVenda;
     }
+
+    public String getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(String categoria) {
+        this.categoria = categoria;
+    }
+
+    public int getQuantidade() {
+        return quantidade;
+    }
+
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
+    }
+
 }

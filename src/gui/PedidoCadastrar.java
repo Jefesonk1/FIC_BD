@@ -1,12 +1,9 @@
 package gui;
 
 import dao.ClienteDao;
-import dao.DetalhesPedidoDao;
 import dao.PedidoDao;
 import dao.ProdutoDao;
 import dao.TransportadoraDao;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.ArrayList;
@@ -17,7 +14,6 @@ import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import models.Cliente;
-import models.DetalhesPedido;
 import models.Endereco;
 import models.Pedido;
 import models.Produto;
@@ -29,13 +25,13 @@ import models.Transportadora;
  */
 public class PedidoCadastrar extends javax.swing.JFrame {
 
-    private int codigoVendedor;
+    private long codigoVendedor;
 
-    public int getCodigoVendedor() {
+    public long getCodigoVendedor() {
         return codigoVendedor;
     }
 
-    public void setCodigoVendedor(int codigoVendedor) {
+    public void setCodigoVendedor(long codigoVendedor) {
         this.codigoVendedor = codigoVendedor;
         lblCodigoVendedor.setText("Codigo do vendedor: " + codigoVendedor);
     }
@@ -815,7 +811,7 @@ public class PedidoCadastrar extends javax.swing.JFrame {
                 }
 
                 modeloTable.addRow(new Object[]{
-                    p.getId(),
+                    p.getCodigo(),
                     nome,
                     p.getTratamento(),
                     p.getSufixo()
@@ -855,63 +851,32 @@ public class PedidoCadastrar extends javax.swing.JFrame {
         p.setCodigoConfirmacao(txtCodigoConfirmacao.getText());
         p.setCodigoTransportadora(Integer.parseInt(jTextField3.getText()));
         p.setCodigoVendedor(codigoVendedor);
-        p.setImposto(12f);
-        p.setEnderecoFatura(Integer.parseInt(jTable5.getValueAt(0, 0).toString()));
-        p.setEnderecoEntrega(Integer.parseInt(jTable6.getValueAt(0, 0).toString()));
+        p.setImposto(12.0f);
+        p.setCodigoEnderecoFatura(Integer.parseInt(jTable5.getValueAt(0, 0).toString()));
+        p.setCodigoEnderecoEntrega(Integer.parseInt(jTable6.getValueAt(0, 0).toString()));
+
+        List<Produto> produtos = new ArrayList<>();
         System.out.println(p.getEnderecoEntrega() + " " + p.getCodigoCliente() + " " + p.getDtpedido());
+        for (int i = 0; i < jTable3.getRowCount(); i++) {
+            Produto pr = new Produto();
+            pr.setCodigo(jTable3.getValueAt(i, 1).toString());
+            pr.setQuantidade(Integer.parseInt(jTable3.getValueAt(i, 0).toString()));
+            pr.setPreco(Float.parseFloat(jTable3.getValueAt(i, 3).toString()));
+            pr.setDesconto(0f);
+            produtos.add(pr);
+        }
 
         try {
-            long codigoPedidooo = PedidoDao.create(p);
-            List<DetalhesPedido> dp = new ArrayList<>();
-            for (int i = 0; i < jTable3.getRowCount(); i++) {
-                DetalhesPedido d = new DetalhesPedido();
-                d.setCodigoPedido(Math.toIntExact(codigoPedidooo));
-                d.setCodigoProduto(jTable3.getValueAt(i, 1).toString());
-                d.setQuantidade(Integer.parseInt( jTable3.getValueAt(i, 0).toString()));
-                d.setPrecoUnitario(Float.parseFloat(jTable3.getValueAt(i, 3).toString()));
-                d.setDesconto(0f);
-                dp.add(d);
-                DetalhesPedidoDao.create(d);
+            p.setCodigo(PedidoDao.create(p));
+            for (int i = 0; i < produtos.size(); i++) {
+                PedidoDao.create(p, produtos.get(i));
             }
+
         } catch (SQLException ex) {
             Logger.getLogger(PedidoCadastrar.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_btnRealizarPedidoActionPerformed
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PedidoCadastrar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PedidoCadastrar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PedidoCadastrar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PedidoCadastrar.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PedidoCadastrar().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnBuscar;
