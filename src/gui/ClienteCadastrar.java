@@ -305,11 +305,9 @@ public class ClienteCadastrar extends javax.swing.JFrame {
         e.setPais(txtPais.getText());
         e.setCodigopostal(txtCodigoPostal.getText());
 
-        // ClienteDao.create(c);
         try {
            c.setCodigo(ClienteDao.create(c));
         } catch (SQLException ex) {
-            //Logger.getLogger(ClienteCadastrar.class.getName()).log(Level.SEVERE, null, ex);
             JOptionPane.showMessageDialog(null, "Faiô", "Falha", JOptionPane.ERROR_MESSAGE);
             return;
         }

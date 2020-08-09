@@ -42,7 +42,6 @@ public class PedidoDao {
         try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
             if (generatedKeys.next()) {
                 long codigo = generatedKeys.getLong(1);
-                System.out.println(codigo);
                 stmt.close();
                 return codigo;
             } else {
@@ -72,6 +71,83 @@ public class PedidoDao {
 
     }
 
+    public static void AlterarEnderecoFatura(long codigoPedido, long enderecoFatura) throws SQLException {
+        Connection con;
+        con = DatabaseConnection.getConnection();
+        PreparedStatement stmt = null;
+        String query = "UPDATE pedido SET ENDERECOFATURA = " + enderecoFatura + "WHERE CODIGO = ?";
+        stmt = con.prepareStatement(query);
+        stmt.setLong(1, codigoPedido);
+        stmt.executeUpdate();
+        stmt.close();
+
+    }
+
+    public static void AlterarEnderecoEntrega(long codigoPedido, long enderecoEntrega) throws SQLException {
+        Connection con;
+        con = DatabaseConnection.getConnection();
+        PreparedStatement stmt = null;
+        String query = "UPDATE pedido SET ENDERECOENTREGA = " + enderecoEntrega + "WHERE CODIGO = ?";
+        stmt = con.prepareStatement(query);
+        stmt.setLong(1, codigoPedido);
+        stmt.executeUpdate();
+        stmt.close();
+
+    }
+
+    public static void AlterarQuantidadeProduto(long codigoPedido, Produto produto) throws SQLException {
+        Connection con;
+        con = DatabaseConnection.getConnection();
+        PreparedStatement stmt = null;
+        String query = "UPDATE DETALHESPEDIDO SET QUANTIDADE = " + produto.getQuantidade() + "WHERE CODIGOPEDIDO = ? AND CODIGOPRODUTO = ?";
+        stmt = con.prepareStatement(query);
+        stmt.setLong(1, codigoPedido);
+        stmt.setString(2, produto.getCodigo());
+        stmt.executeUpdate();
+        stmt.close();
+
+    }
+
+    public static void DeletarProduto(Pedido pe, Produto pr) throws SQLException {
+        Connection con;
+        con = DatabaseConnection.getConnection();
+        PreparedStatement stmt = null;
+        String query = "DELETE FROM DETALHESPEDIDO WHERE CODIGOPEDIDO = ? AND CODIGOPRODUTO = ?";
+        stmt = con.prepareStatement(query);
+        stmt.setLong(1, pe.getCodigo());
+        stmt.setString(2, pr.getCodigo());
+        stmt.executeUpdate();
+        stmt.close();
+
+    }
+    
+    
+    
+    public static void DeletarProduto(long codigoPedido) throws SQLException {
+        Connection con;
+        con = DatabaseConnection.getConnection();
+        PreparedStatement stmt = null;
+        String query = "DELETE FROM DETALHESPEDIDO WHERE CODIGOPEDIDO = ?";
+        stmt = con.prepareStatement(query);
+        stmt.setLong(1, codigoPedido);
+        stmt.executeUpdate();
+        stmt.close();
+
+    }
+    
+    
+    
+    public static void DeletarPedido(long codigoPedido) throws SQLException{
+        Connection con;
+        con = DatabaseConnection.getConnection();
+        PreparedStatement stmt = null;
+        String query = "DELETE FROM PEDIDO WHERE CODIGO = ?";
+        stmt = con.prepareStatement(query);
+        stmt.setLong(1,codigoPedido);
+        stmt.executeUpdate();
+        stmt.close();
+    }
+
     public static List<Pedido> readByCodigoVendedor(String codigoVendedor) throws SQLException {
         Connection con;
         con = DatabaseConnection.getConnection();
@@ -89,6 +165,7 @@ public class PedidoDao {
             Pedido p = new Pedido();
             Cliente c = new Cliente();
             Vendedor v = new Vendedor();
+            v.setCodigo(rs.getLong("codigovendedor"));
             v.setPrimeiroNome(rs.getString("primeironomevendedor"));
             v.setNomeDoMeio(rs.getString("nomedomeiovendedor"));
             v.setSobrenome(rs.getString("sobrenomevendedor"));
@@ -116,8 +193,7 @@ public class PedidoDao {
         return pedidos;
     }
 
-    
-      public static List<Pedido> readByNomeCliente(String nomeCliente) throws SQLException {
+    public static List<Pedido> readByNomeCliente(String nomeCliente) throws SQLException {
         Connection con;
         con = DatabaseConnection.getConnection();
         PreparedStatement stmt = null;
@@ -125,14 +201,22 @@ public class PedidoDao {
 
         List<Pedido> pedidos = new ArrayList<>();
 
-        stmt = con.prepareStatement("SELECT * FROM pedido p join cliente c on c.codigo= p.codigocliente WHERE UPPER(primeironome) like ?");
+        stmt = con.prepareStatement("SELECT c.primeironome, c.nomedomeio, c.sobrenome,p.*,v.PRIMEIRONOME AS PRIMEIRONOMEVENDEDOR,v.NOMEDOMEIO AS NOMEDOMEIOVENDEDOR,v.SOBRENOME AS SOBRENOMEVENDEDOR FROM pedido p LEFT JOIN vendedor v ON v.codigo = p.CODIGOVENDEDOR JOIN cliente c ON c.codigo = p.CODIGOCLIENTE WHERE UPPER(c.primeironome) like ?");
 
-        stmt.setString(1, '%'+nomeCliente.toUpperCase()+'%');
+        stmt.setString(1, '%' + nomeCliente.toUpperCase() + '%');
         rs = stmt.executeQuery();
 
         while (rs.next()) {
             Pedido p = new Pedido();
-
+            Cliente c = new Cliente();
+            Vendedor v = new Vendedor();
+            v.setCodigo(rs.getLong("codigovendedor"));
+            v.setPrimeiroNome(rs.getString("primeironomevendedor"));
+            v.setNomeDoMeio(rs.getString("nomedomeiovendedor"));
+            v.setSobrenome(rs.getString("sobrenomevendedor"));
+            c.setPrimeiroNome(rs.getString("primeironome"));
+            c.setNomeDoMeio(rs.getString("nomedomeio"));
+            c.setSobrenome(rs.getString("sobrenome"));
             p.setCodigo(rs.getLong("codigo"));
             p.setDtpedido(rs.getTimestamp("dtpedido"));
             p.setDtenvio(rs.getTimestamp("dtenvio"));
@@ -146,15 +230,15 @@ public class PedidoDao {
             p.setCodigoEnderecoFatura(rs.getLong("enderecofatura"));
             p.setCodigoEnderecoEntrega(rs.getLong("enderecoentrega"));
             p.setCodigoTransportadora(rs.getLong("codigotransportadora"));
+            p.setCliente(c);
+            p.setVendedor(v);
             pedidos.add(p);
         }
 
         return pedidos;
     }
-    
-    
-    
-        public static List<Pedido> readByNomeVendedor(String nomeVendedor) throws SQLException {
+
+    public static List<Pedido> readByNomeVendedor(String nomeVendedor) throws SQLException {
         Connection con;
         con = DatabaseConnection.getConnection();
         PreparedStatement stmt = null;
@@ -162,14 +246,23 @@ public class PedidoDao {
 
         List<Pedido> pedidos = new ArrayList<>();
 
-        stmt = con.prepareStatement("SELECT * FROM pedido p join vendedor v on v.codigo= p.codigovendedor WHERE UPPER(primeironome) like ?");
+        stmt = con.prepareStatement("SELECT c.primeironome, c.nomedomeio, c.sobrenome,p.*,v.PRIMEIRONOME AS PRIMEIRONOMEVENDEDOR,v.NOMEDOMEIO AS NOMEDOMEIOVENDEDOR,v.SOBRENOME AS SOBRENOMEVENDEDOR FROM pedido p JOIN vendedor v ON v.codigo = p.CODIGOVENDEDOR JOIN cliente c ON c.codigo = p.CODIGOCLIENTE WHERE UPPER(v.primeironome) like ?");
 
-        stmt.setString(1, '%'+nomeVendedor.toUpperCase()+'%');
+        stmt.setString(1, '%' + nomeVendedor.toUpperCase() + '%');
         rs = stmt.executeQuery();
 
         while (rs.next()) {
             Pedido p = new Pedido();
-
+            Cliente c = new Cliente();
+            Vendedor v = new Vendedor();
+            v.setCodigo(rs.getLong("codigovendedor"));
+  
+            v.setPrimeiroNome(rs.getString("primeironomevendedor"));
+            v.setNomeDoMeio(rs.getString("nomedomeiovendedor"));
+            v.setSobrenome(rs.getString("sobrenomevendedor"));
+            c.setPrimeiroNome(rs.getString("primeironome"));
+            c.setNomeDoMeio(rs.getString("nomedomeio"));
+            c.setSobrenome(rs.getString("sobrenome"));
             p.setCodigo(rs.getLong("codigo"));
             p.setDtpedido(rs.getTimestamp("dtpedido"));
             p.setDtenvio(rs.getTimestamp("dtenvio"));
@@ -183,22 +276,14 @@ public class PedidoDao {
             p.setCodigoEnderecoFatura(rs.getLong("enderecofatura"));
             p.setCodigoEnderecoEntrega(rs.getLong("enderecoentrega"));
             p.setCodigoTransportadora(rs.getLong("codigotransportadora"));
+            p.setCliente(c);
+            p.setVendedor(v);
             pedidos.add(p);
         }
 
         return pedidos;
     }
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     public static Pedido readByCodigoPedido(Long codigoPedido) throws SQLException {
         Connection con;
         con = DatabaseConnection.getConnection();
@@ -216,10 +301,10 @@ public class PedidoDao {
                 + "V.PRIMEIRONOME AS PRIMEIRONOMEVENDEDOR, V.NOMEDOMEIO AS NOMEDOMEIOVENDEDOR, V.SOBRENOME AS SOBRENOMEVENDEDOR "
                 + "FROM PEDIDO PE "
                 + "JOIN CLIENTE C ON PE.CODIGOCLIENTE = C.CODIGO "
-                + "JOIN ENDERECO ENFATURA ON ENFATURA.ID= PE.ENDERECOFATURA "
-                + "JOIN ENDERECO E ON E.ID = PE.ENDERECOENTREGA "
-                + "JOIN TRANSPORTADORA T ON T.CODIGO = PE.CODIGOTRANSPORTADORA "
-                + "JOIN VENDEDOR V ON V.CODIGO = PE.CODIGOVENDEDOR "
+                + "LEFT JOIN ENDERECO ENFATURA ON ENFATURA.ID= PE.ENDERECOFATURA "
+                + "LEFT JOIN ENDERECO E ON E.ID = PE.ENDERECOENTREGA "
+                + "LEFT JOIN TRANSPORTADORA T ON T.CODIGO = PE.CODIGOTRANSPORTADORA "
+                + "LEFT JOIN VENDEDOR V ON V.CODIGO = PE.CODIGOVENDEDOR "
                 + "WHERE PE.CODIGO = ? ";
 
         stmt = con.prepareStatement(query);
@@ -232,7 +317,7 @@ public class PedidoDao {
         Vendedor vendedor = new Vendedor();
         Transportadora transportadora = new Transportadora();
         List<Produto> produtos = new ArrayList<>();
-        
+
         while (rs.next()) {
             p.setCodigo(rs.getLong("codigo"));
             p.setDtpedido(rs.getTimestamp("dtpedido"));
@@ -265,14 +350,14 @@ public class PedidoDao {
             fatura.setCodigopostal(rs.getString("codigopostalfatura"));
             p.setEnderecoFatura(fatura);
 
-            fatura.setId(rs.getLong("enderecoentrega"));
-            fatura.setLogradouro(rs.getString("logradouroentrega"));
-            fatura.setComplemento(rs.getString("complementoentrega"));
-            fatura.setCidade(rs.getString("cidadeentrega"));
-            fatura.setEstado(rs.getString("estadoentrega"));
-            fatura.setPais(rs.getString("paisentrega"));
-            fatura.setCodigopostal(rs.getString("codigopostalentrega"));
-            p.setEnderecoEntrega(fatura);
+            entrega.setId(rs.getLong("enderecoentrega"));
+            entrega.setLogradouro(rs.getString("logradouroentrega"));
+            entrega.setComplemento(rs.getString("complementoentrega"));
+            entrega.setCidade(rs.getString("cidadeentrega"));
+            entrega.setEstado(rs.getString("estadoentrega"));
+            entrega.setPais(rs.getString("paisentrega"));
+            entrega.setCodigopostal(rs.getString("codigopostalentrega"));
+            p.setEnderecoEntrega(entrega);
 
             transportadora.setCodigo(rs.getLong("codigotransportadora"));
             transportadora.setNome(rs.getString("nometransportadora"));
@@ -292,13 +377,13 @@ public class PedidoDao {
                 + "C.NOME AS NOMECATEGORIA,"
                 + "DP.CODIGOPEDIDO, DP.CODIGOPRODUTO, DP.QUANTIDADE, DP.PRECOUNITARIO, DP.DESCONTO FROM DETALHESPEDIDO DP "
                 + "JOIN PRODUTO P ON DP.CODIGOPRODUTO = P.CODIGO "
-                + "JOIN CATEGORIA C ON C.CODIGO = P.CODIGOCATEGORIA "
+                + "LEFT JOIN CATEGORIA C ON C.CODIGO = P.CODIGOCATEGORIA "
                 + "WHERE DP.CODIGOPEDIDO = ?";
         stmt = con.prepareStatement(query);
         stmt.setLong(1, codigoPedido);
         rs = stmt.executeQuery();
-        
-        while(rs.next()){
+
+        while (rs.next()) {
             Produto produto = new Produto();
             produto.setNome(rs.getString("nome"));
             produto.setCor(rs.getString("cor"));
@@ -312,9 +397,70 @@ public class PedidoDao {
             produto.setDesconto(rs.getFloat("desconto"));
             produtos.add(produto);
         }
-        
+
         p.setProdutos(produtos);
         return p;
+    }
+
+    public static List<List<String>> Relatorio15Compras() throws SQLException {
+        Connection con;
+        con = DatabaseConnection.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        List<List<String>> pedidos = new ArrayList<>();
+
+        stmt = con.prepareStatement("SELECT C.PRIMEIRONOME, C.NOMEDOMEIO, C.SOBRENOME, COUNT(P.CODIGO) AS \"QTD_COMPRAS\" "
+                + "FROM CLIENTE C JOIN PEDIDO P ON P.CODIGOCLIENTE = C.CODIGO GROUP BY "
+                + "C.PRIMEIRONOME, C.NOMEDOMEIO, C.SOBRENOME HAVING COUNT(P.CODIGO) >=15 ORDER BY "
+                + "COUNT(P.CODIGO) DESC");
+
+        rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            List<String> dados = new ArrayList<>();
+            dados.add(rs.getString("primeironome"));
+            dados.add(rs.getString("nomedomeio"));
+            dados.add(rs.getString("sobrenome"));
+            dados.add(rs.getString("QTD_COMPRAS"));
+            pedidos.add(dados);
+        }
+
+        return pedidos;
+    }
+
+    public static List<List<String>> RelatorioQuota(String dd1, String mm1, String yyyy1, String dd2, String mm2, String yyyy2) throws SQLException {
+        Connection con;
+        con = DatabaseConnection.getConnection();
+        PreparedStatement stmt = null;
+        ResultSet rs = null;
+
+        List<List<String>> pedidos = new ArrayList<>();
+
+        stmt = con.prepareStatement("SELECT V.PRIMEIRONOME, V.NOMEDOMEIO, V.SOBRENOME,VENDAS,V.QUOTA FROM VENDEDOR V "
+                + "JOIN "
+                + "(SELECT P.CODIGOVENDEDOR,SUM(DP.QUANTIDADE*DP.PRECOUNITARIO-DP.DESCONTO) AS VENDAS "
+                + "FROM DETALHESPEDIDO DP JOIN PEDIDO P ON P.CODIGO = DP.CODIGOPEDIDO "
+                + "WHERE P.CODIGOVENDEDOR IS NOT NULL AND P.DTPEDIDO >= ? AND P.DTPEDIDO <= ? "
+                + "GROUP BY P.CODIGOVENDEDOR "
+                + ") VENDEDEDOR_VENDA "
+                + "ON V.CODIGO = VENDEDEDOR_VENDA.CODIGOVENDEDOR "
+                + "WHERE VENDAS > V.QUOTA");
+
+        stmt.setDate(1, java.sql.Date.valueOf(yyyy1 + "-" + mm1 + "-" + dd1));
+        stmt.setDate(2, java.sql.Date.valueOf(yyyy2 + "-" + mm2 + "-" + dd2));
+        rs = stmt.executeQuery();
+
+        while (rs.next()) {
+            List<String> dados = new ArrayList<>();
+            dados.add(rs.getString("primeironome"));
+            dados.add(rs.getString("nomedomeio"));
+            dados.add(rs.getString("sobrenome"));
+            dados.add(rs.getString("quota"));
+            dados.add(rs.getString("vendas"));
+            pedidos.add(dados);
+        }
+        return pedidos;
     }
 
 }

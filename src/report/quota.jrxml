@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="quota" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a8a04a22-938b-4b51-a433-8419e5016375">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<field name="nome" class="java.lang.String"/>
+	<field name="quota" class="java.lang.String"/>
+	<field name="vendas" class="java.lang.String"/>
+	<field name="inicio" class="java.lang.String"/>
+	<field name="fim" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="194" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="555" height="79" uuid="2233c966-f04c-4076-9820-e3b563d11af5"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font size="36"/>
+				</textElement>
+				<text><![CDATA[Relatório Quota]]></text>
+			</staticText>
+			<elementGroup>
+				<textField>
+					<reportElement x="482" y="116" width="73" height="20" uuid="a892e9d5-8408-47d8-9d72-149c9dd9ef83"/>
+					<textFieldExpression><![CDATA[$F{fim}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="348" y="116" width="22" height="20" uuid="4b16ec01-2eff-49f1-812a-55cdebf9f41e"/>
+					<text><![CDATA[até]]></text>
+				</staticText>
+				<textField>
+					<reportElement x="185" y="116" width="82" height="20" uuid="45074d84-3fdf-47aa-97e4-3a77e0f5a9bf"/>
+					<textFieldExpression><![CDATA[$F{inicio}]]></textFieldExpression>
+				</textField>
+				<staticText>
+					<reportElement x="0" y="116" width="70" height="20" uuid="f79fc423-2d14-4a25-a050-7097036f05b7"/>
+					<text><![CDATA[Do período de ]]></text>
+				</staticText>
+			</elementGroup>
+		</band>
+	</title>
+	<pageHeader>
+		<band splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="21" splitType="Stretch">
+			<staticText>
+				<reportElement x="0" y="0" width="185" height="20" uuid="e48cbc87-87db-4ffe-ad0c-8d8abacd8739"/>
+				<text><![CDATA[Nome do Vendedor]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="185" y="0" width="185" height="20" uuid="9f9593de-a019-4294-bd32-e11c04381eb4"/>
+				<text><![CDATA[Quota definida]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="370" y="0" width="185" height="20" uuid="a66df118-88e4-42b5-8602-a97a1de9e228"/>
+				<text><![CDATA[Total de vendas realizadas]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="21" splitType="Stretch">
+			<textField>
+				<reportElement x="0" y="0" width="185" height="20" uuid="15de4c8b-8950-474e-b354-bb90757cc458"/>
+				<textFieldExpression><![CDATA[$F{nome}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="185" y="0" width="185" height="20" uuid="293fbed9-1ef7-4279-a02d-1b5798a5c529"/>
+				<textFieldExpression><![CDATA[$F{quota}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="370" y="0" width="185" height="20" uuid="a3bda388-802a-4275-b7f6-540663e8b031"/>
+				<textFieldExpression><![CDATA[$F{vendas}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

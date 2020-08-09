@@ -1,17 +1,15 @@
 package gui;
 
 import dao.PedidoDao;
-import dao.TransportadoraDao;
 import java.sql.SQLException;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
-import javax.swing.event.ListSelectionEvent;
 import javax.swing.table.DefaultTableModel;
 import models.Pedido;
-import models.Transportadora;
+
 
 /**
  *
@@ -52,7 +50,7 @@ public class PedidoConsultar extends javax.swing.JFrame {
         btnPedidos = new javax.swing.JButton();
         cboxCriterio = new javax.swing.JComboBox<>();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
         jPanel1.setPreferredSize(new java.awt.Dimension(1280, 720));
 
@@ -145,15 +143,12 @@ public class PedidoConsultar extends javax.swing.JFrame {
 
             if (cboxCriterio.getSelectedIndex() == 0 && txtPedidos.getText().length()>0) {
                 pedidos=PedidoDao.readByNomeCliente(txtPedidos.getText() + "");
-                System.out.println("1");
             }
             if (cboxCriterio.getSelectedIndex() == 1) {
                 pedidos=PedidoDao.readByCodigoVendedor(codigoVendedor + "");
-                 System.out.println("2");
             }
             if (cboxCriterio.getSelectedIndex() == 2 &&txtPedidos.getText().length()>0) {
                 pedidos =PedidoDao.readByNomeVendedor(txtPedidos.getText() + "");
-                 System.out.println("3");
             }
 
         DefaultTableModel modeloTable = (DefaultTableModel) tbPedidos.getModel();
@@ -192,68 +187,7 @@ public class PedidoConsultar extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_tbPedidosMouseClicked
 
-    /**
-     * @param args the command line arguments
-     */
-    public static void main(String args[]) {
-        /* Set the Nimbus look and feel */
-        //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
-        /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
-         * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
-         */
-        try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
-                if ("Nimbus".equals(info.getName())) {
-                    javax.swing.UIManager.setLookAndFeel(info.getClassName());
-                    break;
-                }
-            }
-        } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(PedidoConsultar
 
-
-
-.class  
-
-
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(PedidoConsultar
-
-
-
-.class  
-
-
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(PedidoConsultar
-
-
-
-.class  
-
-
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(PedidoConsultar
-
-
-
-.class  
-
-
-.getName()).log(java.util.logging.Level.SEVERE, null, ex);
-        }
-        //</editor-fold>
-
-        /* Create and display the form */
-        java.awt.EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                new PedidoConsultar().setVisible(true);
-            }
-        });
-    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnPedidos;

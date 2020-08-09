@@ -18,10 +18,10 @@ public class ClienteDao {
         ResultSet rs = null;
 
         List<Cliente> clientes = new ArrayList<>();
+        
+        stmt = con.prepareStatement("SELECT * FROM cliente WHERE UPPER(primeironome) like ?");
 
-        stmt = con.prepareStatement("SELECT * FROM cliente WHERE primeironome = ?");
-
-        stmt.setString(1, key);
+        stmt.setString(1, "%"+key.toUpperCase()+"%");
         rs = stmt.executeQuery();
 
         while (rs.next()) {
@@ -35,7 +35,6 @@ public class ClienteDao {
             a.setSufixo(rs.getString("sufixo"));
             a.setSenha(rs.getString("senha"));
             clientes.add(a);
-            System.out.println(a.getPrimeiroNome());
         }
 
         return clientes;
@@ -119,7 +118,6 @@ public class ClienteDao {
         try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
             if (generatedKeys.next()) {
                 long codigo = generatedKeys.getLong(1);
-                System.out.println(codigo);
                 stmt.close();
                 return codigo;
             } else {
@@ -127,9 +125,6 @@ public class ClienteDao {
                 throw new SQLException("Creating user failed, no ID obtained.");
             }
         }
-
-//            stmt = con.prepareStatement("SELECT MAX(codigo) FROM cliente;");
-//            rs = stmt.executeQuery();
     }
 
     public static void delete(int idCliente) throws SQLException {
@@ -143,22 +138,4 @@ public class ClienteDao {
         DatabaseConnection.closeConnection(con, stmt);
     }
 
-//    public void update(Cliente p) {
-//        Connection con;
-//        con = DatabaseConnection.getConnection();
-//        PreparedStatement stmt = null;
-//        ResultSet rs = null;
-//        
-//        try {
-//            stmt = con.prepareStatement("UPDATE cliente set nome = ?, cpf = ? WHERE id = ?");
-//            stmt.setString(1, p.getNome());
-//            stmt.setLong(2, p.getCpf());
-//            stmt.setInt(5, p.getId());
-//            rs = stmt.executeQuery();        
-//        } catch (SQLException ex) {
-//            Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
-//        } finally{
-//            Conexao.closeConnection(con, stmt, rs);
-//        }
-//    }
 }

@@ -18,13 +18,7 @@ public class TransportadoraDao {
 
         List<Transportadora> transportadoras = new ArrayList<>();
         stmt = con.prepareStatement("SELECT * FROM transportadora");
-        // String query = ("SELECT * FROM cliente WHERE primeironome = '?'");
-
-        System.out.println(key);
-        // stmt.setString(1, key);
         rs = stmt.executeQuery();
-//            stmt = con.prepareStatement(query);
-//            rs = stmt.executeQuery(query);
         while (rs.next()) {
             Transportadora t = new Transportadora();
 
@@ -48,9 +42,6 @@ public class TransportadoraDao {
 
         Transportadora t = new Transportadora();
         stmt = con.prepareStatement("SELECT * FROM transportadora where codigo = ?");
-        // String query = ("SELECT * FROM cliente WHERE primeironome = '?'");
-
-        System.out.println(key);
         stmt.setString(1, key);
         rs = stmt.executeQuery();
         while (rs.next()) {

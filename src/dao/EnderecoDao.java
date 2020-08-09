@@ -35,7 +35,6 @@ public class EnderecoDao {
             a.setSufixo(rs.getString("sufixo"));
             a.setSenha(rs.getString("senha"));
             clientes.add(a);
-            System.out.println(a.getPrimeiroNome());
         }
 
         return clientes;
@@ -86,7 +85,6 @@ public class EnderecoDao {
         try (ResultSet generatedKeys = stmt.getGeneratedKeys()) {
             if (generatedKeys.next()) {
                 long id = generatedKeys.getLong(1);
-                System.out.println(id);
                 stmt.close();
                 return id;
             } else {
@@ -113,8 +111,6 @@ public class EnderecoDao {
 
     }
 
-//            stmt = con.prepareStatement("SELECT MAX(codigo) FROM cliente;");
-//            rs = stmt.executeQuery();
     public static void delete(int idCliente) throws SQLException {
         Connection con;
         con = DatabaseConnection.getConnection();
@@ -126,22 +122,4 @@ public class EnderecoDao {
         DatabaseConnection.closeConnection(con, stmt);
     }
 
-//    public void update(Cliente p) {
-//        Connection con;
-//        con = DatabaseConnection.getConnection();
-//        PreparedStatement stmt = null;
-//        ResultSet rs = null;
-//        
-//        try {
-//            stmt = con.prepareStatement("UPDATE cliente set nome = ?, cpf = ? WHERE id = ?");
-//            stmt.setString(1, p.getNome());
-//            stmt.setLong(2, p.getCpf());
-//            stmt.setInt(5, p.getId());
-//            rs = stmt.executeQuery();        
-//        } catch (SQLException ex) {
-//            Logger.getLogger(ClienteDAO.class.getName()).log(Level.SEVERE, null, ex);
-//        } finally{
-//            Conexao.closeConnection(con, stmt, rs);
-//        }
-//    }
 }
